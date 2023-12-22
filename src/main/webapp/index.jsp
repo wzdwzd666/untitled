@@ -1,9 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
+  <title>登录界面</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -78,5 +79,13 @@
       </div>
   </div>
 </body>
+<script type="text/javascript">
+  let error = "${param.error}"
+  if(error==="username"){
+    alert("用户名错误！");
+  }else if(error==="password"){
+    alert("密码错误！")
+  }
+</script>
 </html>
 

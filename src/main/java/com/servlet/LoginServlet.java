@@ -20,13 +20,13 @@ public class LoginServlet extends HttpServlet {
         String password=request.getParameter("password");
         User user= userService.findUserByName(username);
         if(user==null) {
-            request.getRequestDispatcher("/error.jsp?type=username").forward(request,response);
+            request.getRequestDispatcher("/index.jsp?error=username").forward(request,response);
         }else if (user.getPassword().equals(password)) {
             HttpSession session=request.getSession();
             session.setAttribute("user",user);
             request.getRequestDispatcher("/canteenHome.jsp").forward(request,response);
         }else {
-            request.getRequestDispatcher("/error.jsp?type=password").forward(request,response);
+            request.getRequestDispatcher("/index.jsp?error=password").forward(request,response);
         }
     }
 }
