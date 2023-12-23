@@ -37,9 +37,13 @@
 <script type="text/javascript">
   let error = "${param.error}"
   if(error==="userAccount"){
-    alert("用户名错误！");
+    alert("用户账号不存在！");
   }else if(error==="userPassword"){
     alert("用户密码错误！")
+  }else if(error==="adminAccount"){
+    alert("管理员账号不存在！")
+  }else if(error==="adminPassword"){
+    alert("管理员密码错误！")
   }
 </script>
 </html>

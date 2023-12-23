@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class UserDao {
     //根据用户名查询用户
-    public static User findUserByName(String loginAccount){
+    public static User findUserByAccount(String loginAccount){
         User user = null;
         Connection connection= MyConnection.getConnection();
         if(connection==null){
@@ -38,6 +38,22 @@ public class UserDao {
     }
     //插入新用户
     public static void insertUser(User user){
-
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="insert into user(account,name,password,type) values (?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,user.getAccount());
+            statement.setString(2,user.getName());
+            statement.setString(3,user.getPassword());
+            statement.setString(4, user.getType());
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

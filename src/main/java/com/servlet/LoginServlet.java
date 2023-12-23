@@ -2,8 +2,8 @@ package com.servlet;
 
 import com.bean.Admin;
 import com.bean.User;
-import com.service.AdminService;
-import com.service.UserService;
+import com.dao.AdminDao;
+import com.dao.UserDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,15 +15,13 @@ import java.io.IOException;
 
 @WebServlet(name="LoginServlet", value="/LoginServlet")
 public class LoginServlet extends HttpServlet {
-    UserService userService;
-    AdminService adminService;
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String type=request.getParameter("type");
         String account=request.getParameter("account");
         String password=request.getParameter("password");
         if(type.equals("user")){
-            User user= userService.findUserByAccount(account);
+            User user= UserDao.findUserByAccount(account);
             if(user==null) {
                 request.getRequestDispatcher("/index.jsp?error=userAccount").forward(request,response);
             }else if (user.getPassword().equals(password)) {
@@ -34,7 +32,7 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("/index.jsp?error=password").forward(request,response);
             }
         }else {
-            Admin admin=adminService.findUserByAccount(account);
+            Admin admin= AdminDao.findAdminByAccount(account);
             if(admin==null){
                 request.getRequestDispatcher("/index.jsp?error=adminAccount").forward(request,response);
             } else if (admin.getPassword().equals(password)) {

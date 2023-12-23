@@ -15,8 +15,8 @@
         <label>
           注册类型
           <select name="type" >
-            <option value="user">老师</option>
-            <option value="admin">学生</option>
+            <option value="学生">学生</option>
+            <option value="老师">老师</option>
           </select>
         </label>
       </div>
@@ -38,4 +38,10 @@
     </form>
   </div>
   </body>
+  <script>
+    let error = "${param.error}"
+    if(error==="registerAccount"){
+      alert("该账号已存在！");
+    }
+  </script>
 </html>

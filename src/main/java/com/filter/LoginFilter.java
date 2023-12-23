@@ -6,12 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
-//@WebFilter("/*")
+@WebFilter("/*")
 public class LoginFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         //1.强制转换
@@ -34,10 +30,6 @@ public class LoginFilter implements Filter {
                 request.getRequestDispatcher("/index.jsp").forward(request,resp);
             }
         }
-    }
-    @Override
-    public void destroy() {
-
     }
 }
 

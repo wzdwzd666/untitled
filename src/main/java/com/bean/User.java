@@ -1,6 +1,8 @@
 package com.bean;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     String id;
     //账号
     private String account;
