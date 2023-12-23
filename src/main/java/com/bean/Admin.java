@@ -7,17 +7,15 @@ public class Admin implements Serializable {
     String account;
     String name;
     String password;
-    String type;
     String canteenId;
     public Admin(){
 
     }
-    public Admin(String id,String account,String name,String password,String type,String canteenId){
+    public Admin(String id,String account,String name,String password,String canteenId){
         this.id=id;
         this.account=account;
         this.name=name;
         this.password=password;
-        this.type=type;
         this.canteenId=canteenId;
     }
 
@@ -43,14 +41,6 @@ public class Admin implements Serializable {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public void setCanteenId(String canteenId) {

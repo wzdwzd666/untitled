@@ -1,170 +1,105 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>食堂社区交流网站</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>食堂系统管理</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/layui.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/admin.css"/>
 </head>
 <body>
-
-<header>
-    <div class="logo">
-        <h1>食堂社区</h1>
-    </div>
-    <nav>
-        <ul>
-            <li><a href="#">首页</a></li>
-            <li class="dropdown">
-                <a href="#">社区</a>
-                <div class="dropdown-content">
-                    <a href="#">话题1</a>
-                    <a href="#">话题2</a>
-                    <a href="#">话题3</a>
-                </div>
+<div class="main-layout" id='main-layout'>
+    <!--侧边栏-->
+    <div class="main-layout-side">
+        <div class="m-logo" style="color:white;line-height:60px;text-align:center; font-size:18px;">
+            <span>食堂系统管理</span>
+        </div>
+        <ul class="layui-nav layui-nav-tree" lay-filter="leftNav">
+            <li class="layui-nav-item">
+                <a href="javascript:"  data-url="student-list.html" ><i class="iconfont">&#xe604;</i>食堂管理</a>
             </li>
-            <li><a href="#">促销</a></li>
-            <li><a href="#">投票</a></li>
-            <li><a href="#">推荐菜品</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:" data-url="score-list.html"><i class="iconfont">&#xe60c;</i>账号管理</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:" data-url="score-account.html"><i class="iconfont">&#xe604;</i>评价信息管理</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:"  data-id='6' data-url="loginOut" data-text="退出登录"><i class="iconfont">&#x1006;</i>交流社区管理</a>
+            </li>
         </ul>
-    </nav>
-    <div class="user-info">
-        <span class="notification" id="unreadComments">未读评论点赞提示</span>
-        <span class="notification" id="unreadComplaints">未读投诉回复提示</span>
     </div>
-</header>
-
-<main>
-    <section class="promotion-section">
-        <h2>最新促销信息</h2>
-        <div id="promotionInfo">滚动显示最新促销信息</div>
-    </section>
-
-    <section class="vote-section">
-        <h2>最新投票调查</h2>
-        <div id="voteInfo">显示最新的投票调查问题和选项</div>
-    </section>
-
-    <section class="recommendation-section">
-        <h2>最新食堂推荐菜品</h2>
-        <div id="recommendedDishes">列表显示最新推荐的菜品，包含图片和简介</div>
-    </section>
-
-    <section class="community-section">
-        <h2>社区热门话题</h2>
-        <div id="popularTopics">显示被点赞最多的社区信息，提供查看更多按钮</div>
-    </section>
-
-    <section class="ranking-section">
-        <h2>最新食堂排名</h2>
-        <div id="foodCourtRanking">显示食堂排名列表</div>
-    </section>
-
-    <section class="top-rated-dishes-section">
-        <h2>最新高评价菜品排名</h2>
-        <div id="topRatedDishes">显示高评价菜品排名列表</div>
-    </section>
-</main>
-
-<script src="scripts.js"></script>
+    <!--右侧内容-->
+    <div class="main-layout-container">
+        <!--头部-->
+        <div class="main-layout-header">
+            <div class="menu-btn" id="hideBtn">
+            </div>
+            <ul class="layui-nav" lay-filter="rightNav">
+                <li class="layui-nav-item" ><a href="javascript:" data-url="loginOut" style="color:black" >退出</a></li>
+            </ul>
+        </div>
+        <!--主体内容-->
+        <div class="main-layout-body">
+            <!--tab 切换-->
+            <div class="layui-tab layui-tab-brief main-layout-tab" lay-filter="tab" lay-allowClose="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this welcome">操作面板</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show" style="background: #f5f5f5;">
+                        <iframe src="student-list.html" id="iframInfo" width="100%" height="100%" name="iframe" scrolling="auto" class="iframe" framborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--遮罩-->
+    <div class="main-mask">
+    </div>
+</div>
+<script src="assets/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(".layui-nav-item a").on('click',function(){
+        var address=$(this).attr("data-url");
+        if(undefined==address||"undefined"==address){
+            alert("未配置地址");
+        }else{
+            if("loginOut"==address){
+                loginOut();
+            }else{
+                $("#iframInfo").attr("src",address);
+            }
+        }
+    })
+    function loginOut(){
+        $.ajax({
+            //几个参数需要注意一下
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/user/loginOut",//url
+            data: {},
+            success: function (result) {
+                if (result.code == "0") {
+                    location.href="/login.html";
+                }else{
+                    alert(result.msg);
+                }
+            },
+            error : function() {
+                layer.msg('服务器错误', {
+                    icon: 5
+                });
+            }
+        });
+    }
+</script>
+<script src="assets/js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="assets/js/main.js" type="text/javascript" charset="utf-8"></script>
 </body>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
-        color: #333;
-    }
-
-    header {
-        background-color: #fff;
-        padding: 20px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        position: fixed;
-        width: 100%;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo h1 {
-        margin: 0;
-        font-size: 24px;
-        color: #333;
-    }
-
-    nav ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-    }
-
-    nav ul li {
-        margin-right: 20px;
-    }
-
-    nav ul li a {
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-        position: relative;
-    }
-
-    nav ul li:hover .dropdown-content {
-        display: block;
-    }
-
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #fff;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
-        z-index: 1;
-    }
-
-    .dropdown-content a {
-        color: #333;
-        padding: 12px 16px;
-        display: block;
-        text-decoration: none;
-    }
-
-    .dropdown-content a:hover {
-        background-color: #f5f5f5;
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-    }
-
-    .notification {
-        margin-right: 20px;
-        padding: 8px;
-        background-color: #ff6666;
-        color: #fff;
-        border-radius: 5px;
-    }
-
-    main {
-        padding-top: 80px;
-    }
-
-    section {
-        margin-bottom: 30px;
-    }
-
-    footer {
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-    }
-</style>
 </html>
+

@@ -15,7 +15,7 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="select id,account,name,password,,type,canteen_id from admin where account=?";
+            String sql="select id,account,name,password,canteen_id from admin where account=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,loginAccount);
             ResultSet rs=statement.executeQuery();
@@ -24,9 +24,8 @@ public class AdminDao {
                 String account=rs.getString(2);;
                 String name=rs.getString(3);
                 String password=rs.getString(4);
-                String type=rs.getString(5);
-                String canteenId=rs.getString(6);
-                admin=new Admin(id,account,name,password,type,canteenId);
+                String canteenId=rs.getString(5);
+                admin=new Admin(id,account,name,password,canteenId);
             }
             rs.close();
             statement.close();
@@ -42,13 +41,12 @@ public class AdminDao {
             return;
         }
         try {
-            String sql="insert into admin(account,name,password,canteen_id,type) values (?,?,?,?,?)";
+            String sql="insert into admin(account,name,password,canteen_id) values (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,admin.getAccount());
             statement.setString(2,admin.getName());
             statement.setString(3,admin.getPassword());
             statement.setString(4,admin.getCanteenId());
-            statement.setString(5,admin.getType());
             statement.execute();
             statement.close();
             connection.close();

@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet {
             } else if (admin.getPassword().equals(password)) {
                 HttpSession session=request.getSession();
                 session.setAttribute("admin",admin);
-                if(admin.getType().equals("0")){
+                if(admin.getCanteenId()==null){
                     request.getRequestDispatcher("/systemPage.jsp").forward(request,response);
                 }else {
                     request.getRequestDispatcher("/staffCanteenPage.jsp").forward(request,response);
