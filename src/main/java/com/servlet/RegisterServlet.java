@@ -1,5 +1,7 @@
 package com.servlet;
 
+import com.bean.User;
+import com.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,8 +12,13 @@ import java.io.IOException;
 
 @WebServlet(name="RegisterServlet", value="/RegisterServlet")
 public class RegisterServlet extends HttpServlet {
+    UserService userService;
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username=request.getParameter("username");
+        String password=request.getParameter("password");
+        User user= userService.findUserByAccount(username);
+        if(user!=null){
+        }
     }
 }

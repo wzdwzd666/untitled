@@ -1,26 +1,26 @@
 package com.bean;
 
-public class User {
-    String id;
-    //账号
-    private String account;
-    //昵称
-    private String name;
-    //密码
-    private String password;
+import java.io.Serializable;
 
-    //用户类型
-    private String type;
-    public User(){
+public class Admin implements Serializable {
+    String id;
+    String account;
+    String name;
+    String password;
+    String canteenId;
+    String type;
+    public Admin(){
 
     }
-    public User(String id, String account, String name, String password,String type) {
+    public Admin(String id,String account,String name,String password,String canteenId,String type){
         this.id=id;
         this.account=account;
-        this.name = name;
-        this.password = password;
+        this.name=name;
+        this.password=password;
+        this.canteenId=canteenId;
         this.type=type;
     }
+
     public void setAccount(String account) {
         this.account = account;
     }
@@ -45,6 +45,14 @@ public class User {
         return password;
     }
 
+    public void setCanteenId(String canteenId) {
+        this.canteenId = canteenId;
+    }
+
+    public String getCanteenId() {
+        return canteenId;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
@@ -53,5 +61,3 @@ public class User {
         return type;
     }
 }
-
-

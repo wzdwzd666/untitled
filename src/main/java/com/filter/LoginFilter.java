@@ -1,6 +1,7 @@
 package com.filter;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class LoginFilter implements Filter {
         //2.获取请求资源路径
         String requestURI = request.getRequestURI();
         //3.判断是否包含登录相关资源路径,同时排除css,js，图片等
-        if (requestURI.contains("/index.jsp") || requestURI.contains("/LoginServlet")||requestURI.contains("/checkCodeServlet")||requestURI.contains("/css/")||requestURI.contains("/js/")||requestURI.contains("/fonts/")) {
+        if (requestURI.contains("/index.jsp") || requestURI.contains("/LoginServlet")||requestURI.contains("/assets/")) {
             //放行
             chain.doFilter(req, resp);
         } else {

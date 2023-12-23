@@ -4,67 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/assets/css/login.css">
   <title>登录界面</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-image: url("image/loginBack.jpg");
-      background-repeat: no-repeat;/*图片不重复*/
-      overflow: hidden;/*溢出隐藏*/
-      background-size: cover;/*背景覆盖窗口*/
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-container {
-      background-color: transparent;
-      border: 2px solid green;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 300px;
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 20px;
-      margin-bottom: 8px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #cccccc;
-      border-radius: 4px;
-    }
-
-    .form-group input[type="submit"] {
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-    }
-
-    .form-group input[type="submit"]:hover {
-      background-color: #45a049;
-    }
-  </style>
 </head>
 <body>
   <div class="login-container">
     <h2>食堂社区登录</h2>
     <form action="LoginServlet" method="post">
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <select name="type" >
+          <option value="user">师生用户登录</option>
+          <option value="admin">管理员登录</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="account">Account:</label>
+        <input type="text" id="account" name="account" required>
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
@@ -81,10 +36,10 @@
 </body>
 <script type="text/javascript">
   let error = "${param.error}"
-  if(error==="username"){
+  if(error==="userAccount"){
     alert("用户名错误！");
-  }else if(error==="password"){
-    alert("密码错误！")
+  }else if(error==="userPassword"){
+    alert("用户密码错误！")
   }
 </script>
 </html>

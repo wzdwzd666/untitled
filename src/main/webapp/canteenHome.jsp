@@ -57,7 +57,7 @@
 </main>
 
 <footer>
-  <p>&copy; 2023 美丽网站</p>
+  <p>&copy; 2023 食堂交流管理社区</p>
 </footer>
 
 </body>
