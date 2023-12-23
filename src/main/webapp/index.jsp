@@ -12,10 +12,12 @@
     <h2>食堂社区登录</h2>
     <form action="LoginServlet" method="post">
       <div class="form-group">
-        <select name="type" >
-          <option value="user">师生用户登录</option>
-          <option value="admin">管理员登录</option>
-        </select>
+        <label>
+          <select name="type" >
+            <option value="user">师生用户登录</option>
+            <option value="admin">管理员登录</option>
+          </select>
+        </label>
       </div>
       <div class="form-group">
         <label for="account">Account:</label>

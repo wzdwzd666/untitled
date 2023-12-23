@@ -18,17 +18,16 @@ public class CanteenDao {
             return null;
         }
         try {
-            String sql="select id,name,position,start_time,end_time,info from canteen";
+            String sql="select id,name,start_time,end_time,info from canteen";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
                 String id=rs.getString(1);
                 String name=rs.getString(2);
-                String position=rs.getString(3);
-                String starTime=rs.getString(4);
-                String endTime=rs.getString(5);
-                String info=rs.getString(6);
-                canteenList.add(new Canteen(id,name,position,starTime,endTime,info));
+                String starTime=rs.getString(3);
+                String endTime=rs.getString(4);
+                String info=rs.getString(5);
+                canteenList.add(new Canteen(id,name,starTime,endTime,info));
             }
             rs.close();
             statement.close();

@@ -5,17 +5,15 @@ import java.io.Serializable;
 public class Canteen implements Serializable {
     String id;
     String name;
-    String position;
     String startTime;
     String endTime;
     String info;
     public Canteen(){
 
     }
-    public Canteen(String id,String name,String position,String startTime,String endTime,String info){
+    public Canteen(String id,String name,String startTime,String endTime,String info){
         this.id=id;
         this.name=name;
-        this.position=position;
         this.startTime=startTime;
         this.endTime=endTime;
         this.info=info;
@@ -35,14 +33,6 @@ public class Canteen implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getPosition() {
-        return position;
     }
 
     public void setStartTime(String startTime) {

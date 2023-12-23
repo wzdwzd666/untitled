@@ -21,7 +21,8 @@ public class LoginFilter implements Filter {
         } else {
             //4.判断是否登录
             Object user = request.getSession().getAttribute("user");
-            if (user != null) {
+            Object admin=request.getSession().getAttribute("admin");
+            if (user != null||admin != null) {
                 //已登录，放行
                 chain.doFilter(req, resp);
             }else {
