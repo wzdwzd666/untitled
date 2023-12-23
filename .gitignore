@@ -38,3 +38,4 @@ build/
 .DS_Store
 # 项目排除路径
 /out/
+/src/main/webapp/assets/LTE/
