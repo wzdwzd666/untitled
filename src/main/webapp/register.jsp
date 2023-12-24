@@ -36,6 +36,9 @@
         <input type="submit" value="注册并登录">
       </div>
     </form>
+    <div class="form-group">
+      <input type="submit" value="返回登录" onclick="window.location.href='index.jsp';">
+    </div>
   </div>
   </body>
   <script>

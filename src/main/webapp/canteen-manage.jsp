@@ -105,6 +105,8 @@
           row.cells[1].innerHTML = newName
           row.cells[2].innerHTML = newStartTime+"-"+newEndTime
           row.cells[3].innerHTML = newInfo
+          row.cells(4).innerHTML = "<button onclick=\"editCanteen("+canteenId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+")\">编辑</button>\n" +
+                  "<button onclick=\"deleteCanteen("+canteenId+","+newName+")\">删除</button>";
           alert('编辑成功');
         }
       }
@@ -117,7 +119,9 @@
     document.getElementById('deleteDialog').showModal();
   }
   function confirmCanteen() {
-    alert("确定删除吗")
+    if(!confirm("确定删除吗")){
+      return
+    }
     xhr.open('POST', 'CanteenServlet', true)
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.send('type=delete&id='+canteenId )
@@ -157,7 +161,7 @@
           newRow.insertCell(1).innerHTML = newName;
           newRow.insertCell(2).innerHTML = newStartTime+'-'+newEndTime;
           newRow.insertCell(3).innerHTML = newInfo;
-          newRow.insertCell(4).innerHTML = "<button onclick=\"editCanteen("+newId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+"')\">编辑</button>\n" +
+          newRow.insertCell(4).innerHTML = "<button onclick=\"editCanteen("+newId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+")\">编辑</button>\n" +
                   "<button onclick=\"deleteCanteen("+newId+","+newName+")\">删除</button>";
           alert('添加成功');
         }

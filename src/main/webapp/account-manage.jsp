@@ -33,7 +33,7 @@
                 <td >${admin.password}</td>
                 <td >${admin.canteenId}</td>
                 <td>
-                    <button onclick="editAdmin('${admin.id}','${admin.account}', '${admin.name}', '${admin.password}', '${admin.canteenId}')">编辑</button>
+                    <button onclick="editAdmin('${admin.id}', '${admin.name}', '${admin.password}', '${admin.canteenId}')">编辑</button>
                     <button onclick="deleteAdmin('${admin.id}','${admin.name}')">删除</button>
                 </td>
             </tr>
@@ -45,15 +45,13 @@
     <!-- 编辑弹窗 -->
     <dialog id="editDialog">
         <h2>编辑管理员信息</h2>
-        <label for="newAdminAccount">新的管理员账号:</label>
-        <input type="text" id="newAdminAccount" name="newAdminAccount" required>
         <label for="newAdminName">新的管理员姓名:</label>
         <input type="text" id="newAdminName" name="newAdminName" required>
         <label for="newPassword">新的管理员密码:</label>
         <input type="text" id="newPassword" name="newPassword" min="6:00" max="11:00" required>
         <div>
             <label>
-                新的管理食堂:
+                更改管理食堂:
                 <select id="newCanteenId" name="newCanteenId" >
                     <c:forEach var="canteen" items="${canteenList}">
                         <option value="canteen.id">${canteen.name}</option>
@@ -69,7 +67,7 @@
     <dialog id="deleteDialog">
         <h2>确认</h2>
         <p>确认删除管理员: <span id="deleteAdminName"></span> 吗？</p>
-        <button onclick="confirmCanteen()">确认删除</button>
+        <button onclick="confirmAdmin()">确认删除</button>
         <button onclick="document.getElementById('deleteDialog').close();">取消</button>
     </dialog>
 
@@ -83,71 +81,67 @@
         <label for="adminPassword">管理员密码:</label>
         <input type="text" id="adminPassword" name="adminPassword" required>
         <label>
-            管理的食堂:
+            设置管理食堂:
             <select id="canteenId" name="canteenId" >
                 <c:forEach var="canteen" items="${canteenList}">
-                    <option value="canteen.id">${canteen.name}</option>
+                    <option value="${canteen.id}">${canteen.name}</option>
                 </c:forEach>
             </select>
         </label>
-        <input type="submit" onclick="insertCanteen()" value="新增管理员">
+        <input type="submit" onclick="insertAdmin()" value="新增管理员">
         <input type="submit" onclick="document.getElementById('newDialog').close();" value="取消">
     </dialog>
 </section>
 <script>
     let adminId;
     const xhr = new XMLHttpRequest();
-    function editAdmin(id, account, name, password, canteenId) {
+    function editAdmin(id, name, password, canteenId) {
         adminId=id;
-        document.getElementById('newAdminAccount').value = account;
         document.getElementById('newAdminName').value = name;
         document.getElementById('newPassword').value = password;
         document.getElementById('newCanteenId').value = canteenId;
-    }
-    function checkAccount(account) {
-        <c:forEach var="canteen" items="${canteenList}">
-            <option value="canteen.id">${canteen.name}</option>
-        </c:forEach>
+        document.getElementById('editDialog').showModal()
     }
     function saveEdit() {
-        const newAccount = document.getElementById('newAdminAccount').value;
-        checkAccount(newAccount)
         const newName = document.getElementById('newAdminName').value;
         const newPassword = document.getElementById('newPassword').value;
         const newCanteenId = document.getElementById('newCanteenId').value;
         xhr.open('POST', 'AdminServlet',true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        xhr.send('type=edit&id='+adminId+'&newAccount='+newAccount+'&newName='+newName+'&newPassword='+newPassword+'&newCanteenId='+newCanteenId)
+        xhr.send('type=edit&id='+adminId+'&newName='+newName+'&newPassword='+newPassword+'&newCanteenId='+newCanteenId)
         xhr.onreadystatechange = function () {
             if(xhr.readyState===4) {
                 if(xhr.status===200) {
                     //更新数据
                     const row=document.getElementById(adminId)
-                    row.cells[1].innerHTML = newAccount
                     row.cells[2].innerHTML = newName
                     row.cells[3].innerHTML = newPassword
                     row.cells[4].innerHTML = newCanteenId
+                    row.cells[5].innerHTML = "<button onclick=\"editAdmin("+adminId+","+newName+","+newPassword+","+newCanteenId+")\">编辑</button>\n" +
+                        "<button onclick=\"deleteAdmin("+adminId+","+newName+")\">删除</button>";
                     alert('编辑成功');
+                    document.getElementById('editDialog').close();
                 }
             }
         }
-        document.getElementById('editDialog').close();
     }
     function deleteAdmin(id,name) {
         adminId=id;
         document.getElementById('deleteAdminName').textContent = name;
         document.getElementById('deleteDialog').showModal();
     }
-    function confirmCanteen() {
-        alert("确定删除吗")
-        xhr.open('POST', 'CanteenServlet', true)
+    function confirmAdmin() {
+        if(!confirm("确定删除吗")){
+            return
+        }
+        xhr.open('POST', 'AdminServlet', true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        xhr.send('type=delete&id='+canteenId )
+        xhr.send('type=delete&id='+adminId )
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     //删除
-                    const deleteRow=document.getElementById(canteenId)
+                    const deleteRow=document.getElementById(adminId)
                     deleteRow.remove()
                     alert('删除成功');
                 }
@@ -159,29 +153,33 @@
         adminId=id;
         document.getElementById('newDialog').showModal();
     }
-    function insertCanteen() {
-        const newName = document.getElementById('canteenName').value;
-        const newStartTime = document.getElementById('startTime').value;
-        const newEndTime = document.getElementById('endTime').value;
-        const newInfo = document.getElementById('info').value;
-        xhr.open('POST', 'CanteenServlet', true)
+    function insertAdmin() {
+        const newAccount = document.getElementById('adminAccount').value
+        const newName = document.getElementById('adminName').value;
+        const newPassword = document.getElementById('adminPassword').value;
+        const newCanteenId = document.getElementById('canteenId').value;
+        xhr.open('POST', 'AdminServlet', true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        xhr.send('type=insert&id=' + canteenId + '&newName=' + newName + '&newStartTime=' + newStartTime + '&newEndTime=' + newEndTime + '&newInfo=' + newInfo)
+        xhr.send('type=insert&id=' + adminId + '&newAccount=' + newAccount + '&newName=' + newName + '&newPassword=' + newPassword + '&newCanteenId=' + newCanteenId)
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    const newId = xhr.responseText;
-                    console.log(newId);
+                    const result = xhr.responseText;
+                    if(result==="accountError"){
+                        alert("账号已经被注册")
+                        return
+                    }
                     //更新数据
-                    const newRow = document.getElementById('canteenTable').insertRow(-1);
-                    newRow.id = newId;
-                    newRow.insertCell(0).innerHTML = newId;
-                    newRow.insertCell(1).innerHTML = newName;
-                    newRow.insertCell(2).innerHTML = newStartTime+'-'+newEndTime;
-                    newRow.insertCell(3).innerHTML = newInfo;
-                    newRow.insertCell(4).innerHTML = "<button onclick=\"editCanteen("+newId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+"')\">编辑</button>\n" +
-                        "<button onclick=\"deleteCanteen("+newId+","+newName+")\">删除</button>";
-                    alert('添加成功');
+                    const newRow = document.getElementById('adminTable').insertRow(-1);
+                    newRow.id = result;
+                    newRow.insertCell(0).innerHTML = result;
+                    newRow.insertCell(1).innerHTML = newAccount;
+                    newRow.insertCell(2).innerHTML = newName;
+                    newRow.insertCell(3).innerHTML = newPassword;
+                    newRow.insertCell(4).innerHTML = newCanteenId;
+                    newRow.insertCell(5).innerHTML = "<button onclick=\"editAdmin("+result+","+newName+","+newPassword+","+newCanteenId+")\">编辑</button>\n" +
+                        "<button onclick=\"deleteAdmin("+result+","+newName+")\">删除</button>";
+                    alert('新增管理员成功');
                 }
             }
             document.getElementById('newDialog').close();

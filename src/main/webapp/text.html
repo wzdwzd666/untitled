@@ -1,0 +1,46 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评价信息管理</title>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<!-- 在这里添加评价信息的显示和管理代码 -->
+<h2>评价信息管理</h2>
+
+<!-- 示例：显示评价信息的列表 -->
+<c:forEach var="evaluation" items="${evaluations}">
+    <div>
+        <p>ID: ${evaluation.id}</p>
+        <p>内容: ${evaluation.content}</p>
+        <p>作者: ${evaluation.author}</p>
+        <p>日期: ${evaluation.date}</p>
+
+        <!-- 添加用于删除和修改的按钮 -->
+        <button onclick="deleteEvaluation(${evaluation.id})">删除</button>
+        <button onclick="modifyEvaluation(${evaluation.id})">修改</button>
+    </div>
+</c:forEach>
+
+<script>
+    // 删除评价的函数
+    function deleteEvaluation(evaluationId) {
+        // 实现发送请求删除评价的逻辑
+        // 可能使用 AJAX 或其他方法与服务器通信
+        // 成功删除后重新加载 iframe 或更新内容
+    }
+
+    // 修改评价的函数
+    function modifyEvaluation(evaluationId) {
+        // 实现打开表单或进行修改的逻辑
+        // 可能显示一个模态框，跳转到另一个页面，或者直接在原地更新内容
+    }
+</script>
+
+</body>
+</html>

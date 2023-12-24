@@ -101,6 +101,7 @@ public class AdminDao {
             statement.setString(1,admin.getName());
             statement.setString(2,admin.getPassword());
             statement.setString(3,admin.getCanteenId());
+            statement.setString(4,admin.getId());
             statement.execute();
             statement.close();
             connection.close();

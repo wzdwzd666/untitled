@@ -31,9 +31,9 @@
         <input type="submit" value="登录">
       </div>
     </form>
-      <div class="form-group">
-        <input type="submit" value="注册新用户" onclick="window.location.href='register.jsp';">
-      </div>
+    <div class="form-group">
+      <input type="submit" value="注册新用户" onclick="window.location.href='register.jsp';">
+    </div>
   </div>
 </body>
 <script type="text/javascript">

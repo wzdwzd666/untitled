@@ -18,13 +18,13 @@ import java.util.List;
 @WebServlet(name="AdminServlet", value="/AdminServlet")
 public class AdminServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String type=req.getParameter("type");
         String id=req.getParameter("id");
-        String account=req.getParameter("account");
-        String name=req.getParameter("name");
-        String password=req.getParameter("password");
-        String canteenId=req.getParameter("canteenId");
+        String account=req.getParameter("newAccount");
+        String name=req.getParameter("newName");
+        String password=req.getParameter("newPassword");
+        String canteenId=req.getParameter("newCanteenId");
         Admin admin=new Admin(id,account,name,password,canteenId);
         ServletContext context=req.getServletContext();
         List<Admin> adminList= (List<Admin>) context.getAttribute("adminList");
@@ -40,12 +40,17 @@ public class AdminServlet extends HttpServlet {
                 }
                 break;
             case "insert":
-                int newId=AdminDao.insertAdmin(admin);
-                admin.setId(String.valueOf(newId));
-                adminList.add(admin);
-                resp.setContentType("text/plain;charset=UTF-8");
-                // 获取输出流
-                resp.getWriter().println(newId);
+                Admin admin1=AdminDao.findAdminByAccount(account);
+                if(admin1!=null){
+                    int newId=AdminDao.insertAdmin(admin);
+                    admin.setId(String.valueOf(newId));
+                    adminList.add(admin);
+                    resp.setContentType("text/plain;charset=UTF-8");
+                    resp.getWriter().println(newId);
+                }else {
+                    resp.setContentType("text/plain;charset=UTF-8");
+                    resp.getWriter().println("accountError");
+                }
                 break;
             case "delete":
                 AdminDao.deleteAdmin(admin.getId());
