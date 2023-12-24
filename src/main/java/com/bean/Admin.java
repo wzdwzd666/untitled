@@ -19,6 +19,14 @@ public class Admin implements Serializable {
         this.canteenId=canteenId;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public void setAccount(String account) {
         this.account = account;
     }

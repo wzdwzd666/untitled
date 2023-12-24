@@ -3,15 +3,12 @@ package com.servlet;
 import com.bean.Canteen;
 import com.dao.CanteenDao;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name="CanteenServlet", value="/CanteenServlet")
@@ -47,7 +44,6 @@ public class CanteenServlet extends HttpServlet {
                 resp.getWriter().println(newId);
                 break;
             case "delete":
-                System.out.println("8888888888888888888888");
                 CanteenDao.deleteCanteen(id);
                 for(i=0;i<canteenList.size();i++){
                     if(canteenList.get(i).getId().equals(id)){

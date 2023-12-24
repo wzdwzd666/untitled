@@ -19,7 +19,7 @@
       <th>食堂名称</th>
       <th>营业时间</th>
       <th>介绍</th>
-      <th>Action</th>
+      <th>操作</th>
     </tr>
     </thead>
     <tbody>
@@ -62,6 +62,8 @@
     <button onclick="confirmCanteen()">确认删除</button>
     <button onclick="document.getElementById('deleteDialog').close();">取消</button>
   </dialog>
+
+  <!-- 新增食堂弹窗 -->
   <dialog id="newDialog">
     <h2>新增食堂</h2>
     <label for="canteenName">食堂名称:</label>
@@ -72,13 +74,12 @@
     <input type="time" id="endTime" name="endTime" min="15:00" max="23:30" required>
     <div><label for="info">相关信息:</label></div>
     <input type="text" id="info" name="info" required>
-    <input type="submit" onclick="insertCanteen()" value="新增">
+    <input type="submit" onclick="insertCanteen()" value="新增食堂">
     <input type="submit" onclick="document.getElementById('newDialog').close();" value="取消">
   </dialog>
 </section>
 <script>
   let canteenId;
-  let canteenName;
   const xhr = new XMLHttpRequest();
   function editCanteen(id, name, startTime, endTime, info) {
     canteenId=id;
@@ -119,7 +120,7 @@
     alert("确定删除吗")
     xhr.open('POST', 'CanteenServlet', true)
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-    xhr.send('type=delete & id=' + canteenId )
+    xhr.send('type=delete&id='+canteenId )
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {

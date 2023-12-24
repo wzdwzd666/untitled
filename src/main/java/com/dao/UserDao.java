@@ -16,7 +16,7 @@ public class UserDao {
             return null;
         }
         try {
-            String sql="select id,account,name,password,type from user where account=?";
+            String sql="SELECT id,account,name,password,type FROM user WHERE account=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,loginAccount);
             ResultSet rs=statement.executeQuery();
@@ -43,7 +43,7 @@ public class UserDao {
             return;
         }
         try {
-            String sql="insert into user(account,name,password,type) values (?,?,?,?)";
+            String sql="INSERT INTO user(account,name,password,type) VALUES (?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,user.getAccount());
             statement.setString(2,user.getName());

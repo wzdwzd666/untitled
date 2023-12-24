@@ -4,6 +4,7 @@ import com.bean.Admin;
 import com.bean.User;
 import com.dao.AdminDao;
 import com.dao.UserDao;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name="LoginServlet", value="/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -20,6 +23,7 @@ public class LoginServlet extends HttpServlet {
         String type=request.getParameter("type");
         String account=request.getParameter("account");
         String password=request.getParameter("password");
+        ServletContext context=request.getServletContext();
         if(type.equals("user")){
             User user= UserDao.findUserByAccount(account);
             if(user==null) {
@@ -39,6 +43,8 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session=request.getSession();
                 session.setAttribute("admin",admin);
                 if(admin.getCanteenId()==null){
+                    List<Admin> adminList=AdminDao.findAllAdmin();
+                    context.setAttribute("adminList",adminList);
                     request.getRequestDispatcher("/systemPage.jsp").forward(request,response);
                 }else {
                     request.getRequestDispatcher("/staffCanteenPage.jsp").forward(request,response);

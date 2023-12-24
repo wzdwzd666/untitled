@@ -13,7 +13,7 @@
     <form action="LoginServlet" method="post">
       <div class="form-group">
         <label>
-          <select name="type" >
+          <select name="type" id="type">
             <option value="user">师生用户登录</option>
             <option value="admin">管理员登录</option>
           </select>

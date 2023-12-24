@@ -15,7 +15,7 @@ public class CanteenDao {
             return null;
         }
         try {
-            String sql="select id,name,start_time,end_time,info from canteen";
+            String sql="SELECT id,name,start_time,end_time,info FROM canteen";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -60,7 +60,7 @@ public class CanteenDao {
             return 0;
         }
         try {
-            String sql="insert into canteen(name,start_time,end_time,info) values (?,?,?,?)";
+            String sql="INSERT INTO canteen(name,start_time,end_time,info) VALUES (?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,canteen.getName());
             statement.setString(2,canteen.getStartTime());
@@ -99,5 +99,4 @@ public class CanteenDao {
             throw new RuntimeException(e);
         }
     }
-
 }
