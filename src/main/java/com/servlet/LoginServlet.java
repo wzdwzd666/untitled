@@ -47,6 +47,5 @@ public class LoginServlet extends HttpServlet {
                 request.getRequestDispatcher("/index.jsp?error=adminPassword").forward(request,response);
             }
         }
-
     }
 }

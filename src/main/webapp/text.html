@@ -1,183 +1,89 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>食堂管理</title>
+    <title>首页</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        header {
-            background-color: #4caf50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        section {
-            padding: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #333;
-            color: white;
-        }
-
-        form {
-            width: 50%;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        input[type="text"], input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
+        /* 样式可以根据需要进行调整 */
+        .notification-container {
+            position: relative;
             display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
         }
 
-        input[type="submit"] {
-            background-color: #4caf50;
-            color: white;
+        #notification {
+            background-color: #ff6666;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            border: none;
         }
 
-        input[type="submit"]:hover {
-            background-color: #45a049;
+        #notification:hover {
+            background-color: #e63946;
         }
 
-        dialog {
-            border: 1px solid #ccc;
+        #dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
             padding: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-<header>
-    <h2>食堂管理</h2>
-</header>
-<section>
-    <table>
-        <thead>
-        <tr>
-            <th>食堂名称</th>
-            <th>位置</th>
-            <th>营业时间</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <!-- 这里使用后端数据填充表格 -->
-        <tr>
-            <td>食堂1</td>
-            <td>地点1</td>
-            <td>9:00 AM - 6:00 PM</td>
-            <td>
-                <button onclick="editCanteen('食堂1', '地点1', '9:00 AM - 6:00 PM')">编辑</button>
-                <button onclick="confirmDelete('食堂1')">删除</button>
-            </td>
-        </tr>
-        <!-- 其他食堂数据 -->
-        </tbody>
-    </table>
-    <form id="canteenForm">
-        <h2>添加食堂</h2>
-        <label for="canteenName">食堂名称:</label>
-        <input type="text" id="canteenName" name="canteenName" required>
-        <label for="location">位置:</label>
-        <input type="time" id="location" name="location" required>
-        <label for="businessHours">营业时间:</label>
-        <input type="text" id="businessHours" name="businessHours" required>
-        <input type="submit" value="添加">
-    </form>
 
-    <!-- 编辑弹窗 -->
-    <dialog id="editDialog">
-        <label for="newCanteenName">新的食堂名称:</label>
-        <input type="text" id="newCanteenName" name="newCanteenName">
-        <label for="newLocation">新的位置:</label>
-        <input type="text" id="newLocation" name="newLocation">
-        <label for="newBusinessHours">新的营业时间:</label>
-        <input type="text" id="newBusinessHours" name="newBusinessHours">
-        <button onclick="saveEdit()">保存</button>
-    </dialog>
+<!-- 下拉菜单容器 -->
+<div class="notification-container">
+    <!-- 提醒条数 -->
+    <div id="notification" onclick="toggleDropdown()">未查看的信息</div>
 
-    <!-- 删除确认弹窗 -->
-    <dialog id="deleteDialog">
-        <p>确认删除食堂: <span id="deleteCanteenName"></span> 吗？</p>
-        <button onclick="confirmDelete()">确认删除</button>
-        <button onclick="closeDeleteDialog()">取消</button>
-    </dialog>
-</section>
+    <!-- 下拉菜单内容 -->
+    <div id="dropdown-menu">
+        <!-- 第一个菜单项 -->
+        <div onclick="showDetails('complaints')">投诉信息</div>
+        <!-- 第二个菜单项 -->
+        <div onclick="showDetails('feedback')">用户反馈</div>
+        <!-- 更多菜单项... -->
+    </div>
+</div>
+
+<!-- 详细内容 -->
+<div id="details">
+    <!-- 这里显示详细的信息 -->
+    <!-- 初始为空，根据用户选择的下拉菜单项显示不同的内容 -->
+</div>
+
 <script>
-    var editingCanteenName;
-
-    function editCanteen(name, location, hours) {
-        editingCanteenName = name;
-        document.getElementById('newCanteenName').value = name;
-        document.getElementById('newLocation').value = location;
-        document.getElementById('newBusinessHours').value = hours;
-        document.getElementById('editDialog').showModal();
+    function toggleDropdown() {
+        var dropdownMenu = document.getElementById("dropdown-menu");
+        // 切换下拉菜单的显示状态
+        dropdownMenu.style.display = dropdownMenu.style.display === "none" ? "block" : "none";
     }
 
-    function saveEdit() {
-        var newName = document.getElementById('newCanteenName').value;
-        var newLocation = document.getElementById('newLocation').value;
-        var newHours = document.getElementById('newBusinessHours').value;
+    function showDetails(type) {
+        // 获取详细内容的容器元素
+        var details = document.getElementById("details");
 
-        if (newName && newLocation && newHours) {
-            // Implement editing logic
-            alert('编辑食堂: ' + newName);
-            document.getElementById('editDialog').close();
+        // 根据用户选择的下拉菜单项，显示不同的详细内容
+        if (type === "complaints") {
+            details.innerHTML = "<p>投诉1: ...</p><p>投诉2: ...</p>";
+        } else if (type === "feedback") {
+            details.innerHTML = "<p>反馈1: ...</p><p>反馈2: ...</p>";
         }
+        // 更多类型的详细内容...
+
+        // 关闭下拉菜单
+        document.getElementById("dropdown-menu").style.display = "none";
     }
-
-    function confirmDelete(name) {
-        document.getElementById('deleteCanteenName').textContent = name;
-        document.getElementById('deleteDialog').showModal();
-    }
-
-    function closeDeleteDialog() {
-        document.getElementById('deleteDialog').close();
-    }
-
-    document.getElementById('canteenForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        var canteenName = document.getElementById('canteenName').value;
-        var location = document.getElementById('location').value;
-        var businessHours = document.getElementById('businessHours').value;
-
-        document.getElementById('canteenName').value = '';
-        document.getElementById('location').value = '';
-        document.getElementById('businessHours').value = '';
-
-        alert('添加食堂: ' + canteenName);
-    });
 </script>
+
 </body>
 </html>
+```
+
+这个示例中，通过 `toggleDropdown` 函数来切换下拉菜单的显示状态，通过 `showDetails` 函数根据用户选择的下拉菜单项显示不同的详细内容。在实际应用中，你需要根据后台数据来动态更新详细内容。
