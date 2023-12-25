@@ -3,74 +3,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>食堂系统管理</title>
-    <link rel="stylesheet" type="text/css" href="/assets/css/layui.css"/>
-    <link rel="stylesheet" type="text/css" href="/assets/css/admin.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食堂管理员首页</title>
+    <!-- 引入 Bootstrap 样式文件 -->
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- 自定义样式 -->
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        span {
+            font-weight: bold;
+            color: red;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        a {
+            display: block;
+            margin-bottom: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<div class="main-layout" id='main-layout'>
-    <!--侧边栏-->
-    <div class="main-layout-side">
-        <div class="m-logo" style="color:white;line-height:60px;text-align:center; font-size:18px;">
-            <span>食堂系统管理</span>
-        </div>
-        <ul class="layui-nav layui-nav-tree" lay-filter="leftNav">
-            <li class="layui-nav-item">
-                <a onclick="loadPage('canteen-manage.jsp')">食堂管理</a>
-            </li>
-            <li class="layui-nav-item">
-                <a onclick="loadPage('account-manage.jsp')">账号管理</a>
-            </li>
-            <li class="layui-nav-item">
-                <a onclick="loadPage('evaluate-manage.jsp')">评价信息管理</a>
-            </li>
-            <li class="layui-nav-item">
-                <a onclick="loadPage('community-manage.jsp')">交流社区管理</a>
-            </li>
-        </ul>
-    </div>
-    <!--右侧内容-->
-    <div class="main-layout-container">
-        <!--头部-->
-        <div class="main-layout-header">
-            <div class="menu-btn" id="hideBtn">
-            </div>
-            <ul class="layui-nav" lay-filter="rightNav">
-                <li class="layui-nav-item"><a style="color:black">邮件系统</a></li>
-                <li class="layui-nav-item"><a style="color:black">个人信息</a></li>
-                <li class="layui-nav-item" ><a href="index.jsp" style="color:black">退出</a></li>
-            </ul>
-        </div>
-        <!--主体内容-->
-        <div class="main-layout-body">
-            <!--tab 切换-->
-            <div class="layui-tab layui-tab-brief main-layout-tab" lay-filter="tab" lay-allowClose="true">
-                <ul class="layui-tab-title">
-                    <li class="layui-this welcome">操作面板</li>
-                </ul>
-                <div class="layui-tab-content">
-                    <div class="layui-tab-item layui-show" style="background: #f5f5f5;">
-                        <iframe src="canteen-manage.jsp" id="iframeInfo" width="100%" height="100%" name="iframe" scrolling="auto" class="iframe" framborder="0"></iframe>
-                    </div>
-                </div>
-            </div>
+
+<!-- a.首页 -->
+<section>
+    <div class="container">
+        <h2 class="mt-4 mb-4">综合信息首页</h2>
+        <p>新的未查看的投诉和评价信息：<span>${unreadMessagesCount}</span></p>
+        <button class="btn btn-success" onclick="viewDetails()">查看详细内容</button>
+        <div>
+            <a href="canteen-info.jsp">食堂信息维护</a>
+            <a href="dish-maintenance.jsp">菜品维护</a>
+            <a href="evaluation-processing.jsp">食堂评价处理</a>
+            <a href="event-announcement.jsp">活动公告</a>
+            <a href="poll-management.jsp">发布投票调查</a>
+            <a href="complaint-processing.jsp">投诉信息处理</a>
+            <a href="recommendation-publishing.jsp">发布最新推荐菜品</a>
         </div>
     </div>
-    <!--遮罩-->
-    <div class="main-mask">
-    </div>
-</div>
-<script src="assets/js/jquery-3.3.1.min.js"></script>
-<script type="text/javascript">
-    function loadPage(url){
-        document.getElementById("iframeInfo").src=url;
+</section>
+
+<!-- 其他功能页面的内容，省略 -->
+<!-- 你可以在相应的JSP文件中使用Bootstrap的组件和样式来设计页面 -->
+
+<script>
+    function viewDetails() {
+        // 实现查看详细内容的逻辑
     }
 </script>
-<script src="assets/js/layui.js" type="text/javascript" charset="utf-8"></script>
-<script src="assets/js/common.js" type="text/javascript" charset="utf-8"></script>
-<script src="assets/js/main.js" type="text/javascript" charset="utf-8"></script>
+
 </body>
 </html>

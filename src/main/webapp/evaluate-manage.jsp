@@ -4,88 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>食堂管理员首页</title>
-    <!-- 引入 Bootstrap 样式文件 -->
-    <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- 自定义样式 -->
+    <title>食堂评价信息管理</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/manage.css">
     <style>
-        body {
-            padding: 20px;
-        }
-
-        section {
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #007bff;
-        }
-
-        p {
+        .canteenSelect {
+            padding: 8px;
             font-size: 16px;
-        }
-
-        span {
-            font-weight: bold;
-            color: red;
-        }
-
-        button {
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        a {
-            display: block;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             margin-bottom: 10px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+<h2>食堂评价信息列表</h2>
 
-<!-- a.首页 -->
-<section>
-    <div class="container">
-        <h2 class="mt-4 mb-4">综合信息首页</h2>
-        <p>新的未查看的投诉和评价信息：<span>${unreadMessagesCount}</span></p>
-        <button class="btn btn-success" onclick="viewDetails()">查看详细内容</button>
-        <div>
-            <a href="canteen-info.jsp">食堂信息维护</a>
-            <a href="dish-maintenance.jsp">菜品维护</a>
-            <a href="evaluation-processing.jsp">食堂评价处理</a>
-            <a href="event-announcement.jsp">活动公告</a>
-            <a href="poll-management.jsp">发布投票调查</a>
-            <a href="complaint-processing.jsp">投诉信息处理</a>
-            <a href="recommendation-publishing.jsp">发布最新推荐菜品</a>
-        </div>
-    </div>
-</section>
+<label for="canteenSelect">选择食堂：</label>
+<select id="canteenSelect" class="canteenSelect" onchange="getCanteenReviews()">
+    <c:forEach var="canteen" items="${canteenList}">
+            <option value="${canteen.id}">编号:${canteen.id} ${canteen.name}</option>
+    </c:forEach>
+</select>
 
-<!-- 其他功能页面的内容，省略 -->
-<!-- 你可以在相应的JSP文件中使用Bootstrap的组件和样式来设计页面 -->
+<table id="reviewTable" border="1">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>用户</th>
+        <th>食堂</th>
+        <th>评价内容</th>
+        <th>回复管理员</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
 
-<script>
-    function viewDetails() {
-        // 实现查看详细内容的逻辑
-    }
-</script>
-
+    </tbody>
+</table>
 </body>
+<script>
+    // 使用Fetch API发送请求
+    function fetchData(url, options) {
+        return fetch(url, options)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
+    }
+
+    // 获取评价信息列表
+    function getCanteenReviews() {
+        const selectedCanteenId = document.getElementById('canteenSelect').value;
+        fetchData(`ReviewServlet?type=getList&canteenId=${selectedCanteenId}`)
+            .then(data => renderReviewList(data));
+    }
+
+    // 渲染评价信息列表
+    function renderReviewList(list) {
+        const tableBody = document.getElementById('reviewTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        list.forEach(review => {
+            const row = tableBody.insertRow(-1);
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            const cell3 = row.insertCell(2);
+            const cell4 = row.insertCell(3);
+
+            cell1.innerHTML = review.id;
+            cell2.innerHTML = review.content;
+            cell3.innerHTML = review.canteen;
+            cell4.innerHTML = `<button onclick="editReview(${review.id}, '${review.content}')">编辑</button>
+                                   <button onclick="deleteReview(${review.id})">删除</button>`;
+        });
+    }
+
+    // 编辑评价信息
+    function editReview(id, content) {
+        const newContent = prompt('编辑评价信息:', content);
+        if (newContent !== null) {
+            const selectedCanteenId = document.getElementById('canteenSelect').value;
+            const formData = new FormData();
+            formData.append('type', 'edit');
+            formData.append('id', id);
+            formData.append('newContent', newContent);
+            formData.append('canteenId', selectedCanteenId);
+
+            fetchData('ReviewServlet', { method: 'POST', body: formData })
+                .then(() => getCanteenReviews());
+        }
+    }
+
+    // 删除评价信息
+    function deleteReview(id) {
+        if (confirm('确认删除评价信息？')) {
+            const selectedCanteenId = document.getElementById('canteenSelect').value;
+            const formData = new FormData();
+            formData.append('type', 'delete');
+            formData.append('id', id);
+            formData.append('canteenId', selectedCanteenId);
+
+            fetchData('ReviewServlet', { method: 'POST', body: formData })
+                .then(() => getCanteenReviews());
+        }
+    }
+
+    // 页面加载时获取默认食堂评价信息列表
+    window.onload = getCanteenReviews;
+</script>
 </html>
+
