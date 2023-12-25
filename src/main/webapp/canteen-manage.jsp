@@ -38,7 +38,7 @@
     </c:forEach>
     </tbody>
   </table>
-  <input type="submit" value="添加新食堂" onclick="newCanteen()">
+  <input type="submit" value="添加新食堂" onclick="document.getElementById('newDialog').showModal();">
 
   <!-- 编辑弹窗 -->
   <dialog id="editDialog">
@@ -82,6 +82,7 @@
   let canteenId;
   const xhr = new XMLHttpRequest();
   function editCanteen(id, name, startTime, endTime, info) {
+    console.log(id+"打开编辑弹窗")
     canteenId=id;
     document.getElementById('newCanteenName').value = name;
     document.getElementById('newStartTime').value = startTime;
@@ -101,12 +102,8 @@
       if(xhr.readyState===4) {
         if(xhr.status===200) {
           //更新数据
-          const row=document.getElementById(canteenId)
-          row.cells[1].innerHTML = newName
-          row.cells[2].innerHTML = newStartTime+"-"+newEndTime
-          row.cells[3].innerHTML = newInfo
-          row.cells(4).innerHTML = "<button onclick=\"editCanteen("+canteenId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+")\">编辑</button>\n" +
-                  "<button onclick=\"deleteCanteen("+canteenId+","+newName+")\">删除</button>";
+          console.log(canteenId+"保存编辑数据")
+          location.reload();
           alert('编辑成功');
         }
       }
@@ -117,6 +114,7 @@
     canteenId=id;
     document.getElementById('deleteCanteenName').textContent = name;
     document.getElementById('deleteDialog').showModal();
+    console.log(canteenId+"打开删除弹窗")
   }
   function confirmCanteen() {
     if(!confirm("确定删除吗")){
@@ -128,18 +126,14 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
+          console.log(canteenId+"删除")
           //删除
-          const deleteRow=document.getElementById(canteenId)
-          deleteRow.remove()
+          location.reload()
           alert('删除成功');
         }
       }
       document.getElementById('deleteDialog').close()
     }
-  }
-  function newCanteen(id){
-    canteenId=id;
-    document.getElementById('newDialog').showModal();
   }
   function insertCanteen() {
     const newName = document.getElementById('canteenName').value;
@@ -152,22 +146,19 @@
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          const newId = xhr.responseText;
-          console.log(newId);
+          const result = xhr.responseText;
+          if (result === "食堂名称已存在") {
+            alert(result)
+            return
+          }
+          console.log(result+"新增食堂");
           //更新数据
-          const newRow = document.getElementById('canteenTable').insertRow(-1);
-          newRow.id = newId;
-          newRow.insertCell(0).innerHTML = newId;
-          newRow.insertCell(1).innerHTML = newName;
-          newRow.insertCell(2).innerHTML = newStartTime+'-'+newEndTime;
-          newRow.insertCell(3).innerHTML = newInfo;
-          newRow.insertCell(4).innerHTML = "<button onclick=\"editCanteen("+newId+","+newName+","+newStartTime+","+newEndTime+","+newInfo+")\">编辑</button>\n" +
-                  "<button onclick=\"deleteCanteen("+newId+","+newName+")\">删除</button>";
-          alert('添加成功');
+          location.reload();
+          alert("添加成功")
         }
       }
-      document.getElementById('newDialog').close();
     }
+    document.getElementById('newDialog').close();
   }
 </script>
 </body>

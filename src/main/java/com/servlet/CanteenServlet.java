@@ -36,12 +36,18 @@ public class CanteenServlet extends HttpServlet {
                 }
                 break;
             case "insert":
-                int newId=CanteenDao.insertCanteen(canteen);
-                canteen.setId(String.valueOf(newId));
-                canteenList.add(canteen);
-                resp.setContentType("text/plain;charset=UTF-8");
-                // 获取输出流
-                resp.getWriter().println(newId);
+                if(CanteenDao.findCanteenByName(canteen.getName())==null){
+                    int newId=CanteenDao.insertCanteen(canteen);
+                    canteen.setId(String.valueOf(newId));
+                    canteenList.add(canteen);
+                    // 获取输出流
+                    resp.setContentType("text/plain;charset=UTF-8");
+                    resp.getWriter().println(newId);
+                }else {
+                    // 获取输出流
+                    resp.setContentType("text/plain;charset=UTF-8");
+                    resp.getWriter().println("食堂名称已存在");
+                }
                 break;
             case "delete":
                 CanteenDao.deleteCanteen(id);

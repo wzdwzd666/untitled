@@ -19,28 +19,34 @@
             <th>管理员账号</th>
             <th>管理员姓名</th>
             <th>管理员密码</th>
-            <th>管理食堂编号</th>
+            <th>管理食堂</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
-        <!-- 这里使用后端数据填充表格 -->
+        <!-- 填充表格 -->
         <c:forEach var="admin" items="${adminList}">
             <tr id="${admin.id}">
                 <td >${admin.id}</td>
                 <td >${admin.account}</td>
                 <td >${admin.name}</td>
                 <td >${admin.password}</td>
-                <td >${admin.canteenId}</td>
+                <td >编号:${admin.canteenId}
+                    <c:forEach var="canteen" items="${canteenList}">
+                        <c:if test="${canteen.id==admin.canteenId}">
+                            ${canteen.name}
+                        </c:if>
+                    </c:forEach>
+                </td>
                 <td>
-                    <button onclick="editAdmin('${admin.id}', '${admin.name}', '${admin.password}', '${admin.canteenId}')">编辑</button>
+                    <button onclick="editAdmin('${admin.id}', '${admin.account}', '${admin.name}', '${admin.password}', '${admin.canteenId}')">编辑</button>
                     <button onclick="deleteAdmin('${admin.id}','${admin.name}')">删除</button>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-    <input type="submit" value="添加新管理员" onclick="newAdmin()">
+    <input type="submit" value="添加新管理员" onclick="document.getElementById('newDialog').showModal()">
 
     <!-- 编辑弹窗 -->
     <dialog id="editDialog">
@@ -54,7 +60,7 @@
                 更改管理食堂:
                 <select id="newCanteenId" name="newCanteenId" >
                     <c:forEach var="canteen" items="${canteenList}">
-                        <option value="canteen.id">${canteen.name}</option>
+                        <option value="${canteen.id}">编号:${canteen.id} ${canteen.name}</option>
                     </c:forEach>
                 </select>
             </label>
@@ -84,7 +90,7 @@
             设置管理食堂:
             <select id="canteenId" name="canteenId" >
                 <c:forEach var="canteen" items="${canteenList}">
-                    <option value="${canteen.id}">${canteen.name}</option>
+                    <option value="${canteen.id}">编号:${canteen.id} 名字:${canteen.name}</option>
                 </c:forEach>
             </select>
         </label>
@@ -94,31 +100,29 @@
 </section>
 <script>
     let adminId;
-    const xhr = new XMLHttpRequest();
-    function editAdmin(id, name, password, canteenId) {
-        adminId=id;
+    let adminAccount
+    function editAdmin(id, account, name, password, canteenId) {
+        adminId=id
+        adminAccount=account
         document.getElementById('newAdminName').value = name;
         document.getElementById('newPassword').value = password;
         document.getElementById('newCanteenId').value = canteenId;
         document.getElementById('editDialog').showModal()
     }
     function saveEdit() {
+        console.log(adminId+"保存更改")
         const newName = document.getElementById('newAdminName').value;
         const newPassword = document.getElementById('newPassword').value;
         const newCanteenId = document.getElementById('newCanteenId').value;
+        const xhr = new XMLHttpRequest();
         xhr.open('POST', 'AdminServlet',true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-        xhr.send('type=edit&id='+adminId+'&newName='+newName+'&newPassword='+newPassword+'&newCanteenId='+newCanteenId)
+        xhr.send('type=edit&id='+adminId+'&newAccount='+adminAccount+'&newName='+newName+'&newPassword='+newPassword+'&newCanteenId='+newCanteenId)
         xhr.onreadystatechange = function () {
             if(xhr.readyState===4) {
                 if(xhr.status===200) {
                     //更新数据
-                    const row=document.getElementById(adminId)
-                    row.cells[2].innerHTML = newName
-                    row.cells[3].innerHTML = newPassword
-                    row.cells[4].innerHTML = newCanteenId
-                    row.cells[5].innerHTML = "<button onclick=\"editAdmin("+adminId+","+newName+","+newPassword+","+newCanteenId+")\">编辑</button>\n" +
-                        "<button onclick=\"deleteAdmin("+adminId+","+newName+")\">删除</button>";
+                    location.reload();
                     alert('编辑成功');
                     document.getElementById('editDialog').close();
                 }
@@ -134,6 +138,7 @@
         if(!confirm("确定删除吗")){
             return
         }
+        const xhr = new XMLHttpRequest();
         xhr.open('POST', 'AdminServlet', true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
         xhr.send('type=delete&id='+adminId )
@@ -141,23 +146,20 @@
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     //删除
-                    const deleteRow=document.getElementById(adminId)
-                    deleteRow.remove()
+                    console.log(adminId+"删除管理员")
+                    location.reload();
                     alert('删除成功');
                 }
             }
             document.getElementById('deleteDialog').close()
         }
     }
-    function newAdmin(id){
-        adminId=id;
-        document.getElementById('newDialog').showModal();
-    }
     function insertAdmin() {
         const newAccount = document.getElementById('adminAccount').value
         const newName = document.getElementById('adminName').value;
         const newPassword = document.getElementById('adminPassword').value;
         const newCanteenId = document.getElementById('canteenId').value;
+        const xhr = new XMLHttpRequest();
         xhr.open('POST', 'AdminServlet', true)
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
         xhr.send('type=insert&id=' + adminId + '&newAccount=' + newAccount + '&newName=' + newName + '&newPassword=' + newPassword + '&newCanteenId=' + newCanteenId)
@@ -165,24 +167,21 @@
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     const result = xhr.responseText;
-                    if(result==="accountError"){
-                        alert("账号已经被注册")
-                        return
+                    console.log(result);
+                    if (result === "accountError"||result==="") {
+                        console.log(result);
+                        alert("账号已经被注册");
+                        // 如果出现错误，可以在这里直接返回，以终止函数执行
+                        document.getElementById('newDialog').close();
+                    }else {
+                        console.log(result+"添加管理员")
+                        // 更新数据
+                        location.reload();
+                        alert('新增管理员成功');
+                        document.getElementById('newDialog').close();
                     }
-                    //更新数据
-                    const newRow = document.getElementById('adminTable').insertRow(-1);
-                    newRow.id = result;
-                    newRow.insertCell(0).innerHTML = result;
-                    newRow.insertCell(1).innerHTML = newAccount;
-                    newRow.insertCell(2).innerHTML = newName;
-                    newRow.insertCell(3).innerHTML = newPassword;
-                    newRow.insertCell(4).innerHTML = newCanteenId;
-                    newRow.insertCell(5).innerHTML = "<button onclick=\"editAdmin("+result+","+newName+","+newPassword+","+newCanteenId+")\">编辑</button>\n" +
-                        "<button onclick=\"deleteAdmin("+result+","+newName+")\">删除</button>";
-                    alert('新增管理员成功');
                 }
             }
-            document.getElementById('newDialog').close();
         }
     }
 </script>

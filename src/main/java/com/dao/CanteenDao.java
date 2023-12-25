@@ -1,5 +1,6 @@
 package com.dao;
 
+import com.bean.Admin;
 import com.bean.Canteen;
 import com.bean.User;
 
@@ -95,6 +96,28 @@ public class CanteenDao {
             statement.execute();
             statement.close();
             connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static String findCanteenByName(String name){
+        String id = null;
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT id From canteen where name=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,name);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                id=rs.getString(1);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return id;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

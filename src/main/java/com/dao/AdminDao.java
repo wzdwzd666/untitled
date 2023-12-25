@@ -42,7 +42,7 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="SELECT id,account,name,password,canteen_id FROM admin";
+            String sql="SELECT id,account,name,password,canteen_id FROM admin WHERE canteen_id IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -96,7 +96,7 @@ public class AdminDao {
             return;
         }
         try {
-            String sql="UPDATE canteen SET name = ?, password = ?, canteen_id=? WHERE id=?";
+            String sql="UPDATE admin SET name = ?, password = ?, canteen_id=? WHERE id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,admin.getName());
             statement.setString(2,admin.getPassword());

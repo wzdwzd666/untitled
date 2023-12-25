@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name="AdminServlet", value="/AdminServlet")
@@ -40,17 +41,18 @@ public class AdminServlet extends HttpServlet {
                 }
                 break;
             case "insert":
-                Admin admin1=AdminDao.findAdminByAccount(account);
-                if(admin1!=null){
+                PrintWriter out=resp.getWriter();
+                if(AdminDao.findAdminByAccount(account)==null){
                     int newId=AdminDao.insertAdmin(admin);
                     admin.setId(String.valueOf(newId));
                     adminList.add(admin);
                     resp.setContentType("text/plain;charset=UTF-8");
-                    resp.getWriter().println(newId);
+                    out.println(newId);
                 }else {
                     resp.setContentType("text/plain;charset=UTF-8");
-                    resp.getWriter().println("accountError");
+                    out.println("accountError");
                 }
+                out.close();
                 break;
             case "delete":
                 AdminDao.deleteAdmin(admin.getId());
