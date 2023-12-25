@@ -35,6 +35,7 @@
         <th>食堂</th>
         <th>评价内容</th>
         <th>回复管理员</th>
+        <th>回复内容</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -54,7 +55,16 @@
     // 获取评价信息列表
     function getCanteenReviews() {
         const selectedCanteenId = document.getElementById('canteenSelect').value;
-        fetchData(`ReviewServlet?type=getList&canteenId=${selectedCanteenId}`)
+        // 构造 POST 请求的选项对象
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: `type=getListByCanteenId&canteenId=${selectedCanteenId}`,
+        };
+
+        fetchData('CanteenEvaluateServlet', postOptions)
             .then(data => renderReviewList(data));
     }
 
@@ -65,15 +75,14 @@
 
         list.forEach(review => {
             const row = tableBody.insertRow(-1);
-            const cell1 = row.insertCell(0);
-            const cell2 = row.insertCell(1);
-            const cell3 = row.insertCell(2);
-            const cell4 = row.insertCell(3);
 
-            cell1.innerHTML = review.id;
-            cell2.innerHTML = review.content;
-            cell3.innerHTML = review.canteen;
-            cell4.innerHTML = `<button onclick="editReview(${review.id}, '${review.content}')">编辑</button>
+            row.insertCell(0).innerHTML = review.id;
+            row.insertCell(1).innerHTML = review.userId;
+            row.insertCell(2).innerHTML = review.canteenId;
+            row.insertCell(3).innerHTML = review.content;
+            row.insertCell(4).innerHTML = review.replyAdminId
+            row.insertCell(5).innerHTML = review.replyContent
+            row.insertCell(6).innerHTML = `<button onclick="editReview(${review.id}, '${review.replyContent}')">编辑</button>
                                    <button onclick="deleteReview(${review.id})">删除</button>`;
         });
     }

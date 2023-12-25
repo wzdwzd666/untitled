@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CanteenEvaluateListDao {
-    public static List<CanteenEvaluate> findAllCanteenEvaluate(){
+    public static List<CanteenEvaluate> findCanteenEvaluate(String sql){
         List<CanteenEvaluate> canteenEvaluateList=new ArrayList<>();
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return null;
         }
         try {
-            String sql="SELECT id,user_id,canteen_id,content,reply_admin_id,reply_content FROM canteen_evaluate";
+//            String sql="SELECT id,user_id,canteen_id,content,reply_admin_id,reply_content FROM canteen_evaluate WHERE canteen_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -34,6 +34,39 @@ public class CanteenEvaluateListDao {
             statement.close();
             connection.close();
             return canteenEvaluateList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void editCanteenEvaluateById(String id,String replyContent) {
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="UPDATE canteen SET reply_content = ? WHERE id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,replyContent);
+            statement.setString(2,id);
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void deleteCanteenEvaluate(String id){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="DELETE FROM canteen_evaluate WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, Integer.parseInt(id));
+            statement.execute();
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

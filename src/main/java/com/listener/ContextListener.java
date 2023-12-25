@@ -20,7 +20,7 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         canteenList= CanteenDao.findAllCanteen();
-        canteenEvaluateList= CanteenEvaluateListDao.findAllCanteenEvaluate();
+//        canteenEvaluateList= CanteenEvaluateListDao.findAllCanteenEvaluate();
         ServletContext context=sce.getServletContext();
         context.setAttribute("canteenEvaluateList",canteenEvaluateList);
         context.setAttribute("canteenList",canteenList);
