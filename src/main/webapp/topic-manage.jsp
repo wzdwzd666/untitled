@@ -4,21 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>食堂评价信息管理</title>
+    <title>社区话题管理</title>
     <link rel="stylesheet" type="text/css" href="assets/css/manage.css">
-    <style>
-        .canteenSelect {
-            padding: 8px;
-            font-size: 16px;
-            width: 200px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
-<h2>食堂评价信息列表</h2>
+<h2>社区话题列表</h2>
 
 <label for="canteenSelect">选择食堂：</label>
 <select id="canteenSelect" class="canteenSelect" onchange="getCanteenReviews()">

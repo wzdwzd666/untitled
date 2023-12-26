@@ -18,7 +18,6 @@ public class CanteenEvaluateListDao {
             return null;
         }
         try {
-//            String sql="SELECT id,user_id,canteen_id,content,reply_admin_id,reply_content FROM canteen_evaluate WHERE canteen_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -38,16 +37,17 @@ public class CanteenEvaluateListDao {
             throw new RuntimeException(e);
         }
     }
-    public static void editCanteenEvaluateById(String id,String replyContent) {
+    public static void editCanteenEvaluateById(String id,String adminId,String replyContent) {
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
         }
         try {
-            String sql="UPDATE canteen SET reply_content = ? WHERE id=?";
+            String sql="UPDATE canteen_evaluate SET reply_admin_id = ?, reply_content = ? WHERE id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,replyContent);
-            statement.setString(2,id);
+            statement.setString(1,adminId);
+            statement.setString(2,replyContent);
+            statement.setString(3,id);
             statement.execute();
             statement.close();
             connection.close();

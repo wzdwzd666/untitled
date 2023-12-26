@@ -30,11 +30,13 @@
     </tr>
     </thead>
     <tbody>
-
+<!--    js填充页面-->
     </tbody>
 </table>
 </body>
 <script>
+    // 页面加载时获取默认食堂评价信息列表
+    window.onload = getCanteenReviews;
     // 使用Fetch API发送请求
     function fetchData(url, options) {
         return fetch(url, options)
@@ -51,7 +53,6 @@
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            // body: 'type=getListByCanteenId&canteenId='+selectedCanteenId,
             body: new URLSearchParams({
                 type: 'getListByCanteenId',
                 canteenId: selectedCanteenId,
@@ -64,55 +65,73 @@
 
     // 渲染评价信息列表
     function renderReviewList(list) {
+        console.log("渲染列表")
+        console.log(list)
         const tableBody = document.getElementById('reviewTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = '';
 
         list.forEach(review => {
             const row = tableBody.insertRow(-1);
-
-            row.insertCell(0).innerHTML = review.id;
-            row.insertCell(1).innerHTML = review.userId;
-            row.insertCell(2).innerHTML = review.canteenId;
-            row.insertCell(3).innerHTML = review.content;
-            row.insertCell(4).innerHTML = review.replyAdminId
-            row.insertCell(5).innerHTML = review.replyContent
-            row.insertCell(6).innerHTML = `<button onclick="editReview(${review.id}, '${review.replyContent}')">编辑</button>
-                                   <button onclick="deleteReview(${review.id})">删除</button>`;
+            row.id = review.id
+            row.insertCell(0).textContent = review.id
+            row.insertCell(1).textContent = review.userId
+            row.insertCell(2).textContent = review.canteenId
+            row.insertCell(3).textContent = review.content;
+            row.insertCell(4).textContent = review.replyAdminId
+            row.insertCell(5).textContent = review.replyContent
+            row.insertCell(6).innerHTML = "<button onclick=\"editReview('"+review.id+"', '"+review.replyContent+"')\">编辑</button> <button onclick=\"deleteReview('"+review.id+"')\">删除</button>"
         });
     }
 
     // 编辑评价信息
-    function editReview(id, content) {
-        const newContent = prompt('编辑评价信息:', content);
+    function editReview(id, replyContent) {
+        console.log("编辑"+replyContent)
+        let newContent
+        if (replyContent === undefined) {
+            newContent = prompt('编辑回复信息:')
+        }else {
+            newContent = prompt('编辑回复信息:'+replyContent)
+        }
+        console.log("新回复信息："+newContent)
         if (newContent !== null) {
             const selectedCanteenId = document.getElementById('canteenSelect').value;
-            const formData = new FormData();
-            formData.append('type', 'edit');
-            formData.append('id', id);
-            formData.append('newContent', newContent);
-            formData.append('canteenId', selectedCanteenId);
-
-            fetchData('ReviewServlet', { method: 'POST', body: formData })
-                .then(() => getCanteenReviews());
+            // 构造 POST 请求的选项对象
+            const postOptions = {
+                method: 'POST', // 设置请求方法为 POST
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    type: 'edit',
+                    id: id,
+                    canteenId: selectedCanteenId,
+                    replyContent: newContent,
+                }),
+            };
+            fetchData('CanteenEvaluateServlet', postOptions)
+                .then(data => renderReviewList(data));
         }
     }
 
     // 删除评价信息
     function deleteReview(id) {
-        if (confirm('确认删除评价信息？')) {
-            const selectedCanteenId = document.getElementById('canteenSelect').value;
-            const formData = new FormData();
-            formData.append('type', 'delete');
-            formData.append('id', id);
-            formData.append('canteenId', selectedCanteenId);
-
-            fetchData('ReviewServlet', { method: 'POST', body: formData })
-                .then(() => getCanteenReviews());
+        const selectedCanteenId = document.getElementById('canteenSelect').value;
+        if (confirm('确认删除评价信息?')) {
+            const postOptions = {
+                method: 'POST', // 设置请求方法为 POST
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    type: 'delete',
+                    id: id,
+                    canteenId: selectedCanteenId,
+                }),
+            };
+            fetchData('CanteenEvaluateServlet', postOptions)
+                .then(data => renderReviewList(data));
         }
     }
-
-    // 页面加载时获取默认食堂评价信息列表
-    window.onload = getCanteenReviews;
 </script>
 </html>
 

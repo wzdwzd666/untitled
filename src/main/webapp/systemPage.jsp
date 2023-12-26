@@ -16,11 +16,11 @@
   <h2>后台管理系统</h2>
 </header>
 <nav>
-  <a class="align-left">系统管理员：${admin.name}</a>
+  <a class="align-left">编号:${admin.id},系统管理员:${admin.name}</a>
   <a href="canteen-manage.jsp" target="frame" id="canteen" onclick="changeColor('canteen')" class="selected">食堂管理</a>
   <a href="account-manage.jsp" target="frame" id="account" onclick="changeColor('account')">账号管理</a>
   <a href="evaluate-manage.jsp" target="frame" id="evaluate" onclick="changeColor('evaluate')">评价信息</a>
-  <a href="community-manage.jsp" target="frame" id="community" onclick="changeColor('community')">交流社区</a>
+  <a href="topic-manage.jsp" target="frame" id="community" onclick="changeColor('community')">交流社区</a>
   <a href="index.jsp" class="align-right">退出登录</a>
   <a href="user-detail.jsp" class="align-right" target="frame" id="detail" onclick="changeColor('detail')">个人信息</a>
 </nav>
