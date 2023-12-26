@@ -1,7 +1,6 @@
 package com.bean;
 
 import java.io.Serializable;
-import java.util.StringTokenizer;
 
 public class TopicEvaluate implements Serializable {
     private String id;

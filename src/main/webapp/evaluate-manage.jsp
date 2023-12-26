@@ -90,7 +90,7 @@
         if (replyContent === undefined) {
             newContent = prompt('编辑回复信息:')
         }else {
-            newContent = prompt('编辑回复信息:'+replyContent)
+            newContent = prompt('编辑回复信息:',replyContent)
         }
         console.log("新回复信息："+newContent)
         if (newContent !== null) {
@@ -115,6 +115,7 @@
 
     // 删除评价信息
     function deleteReview(id) {
+        console.log("删除:"+id)
         const selectedCanteenId = document.getElementById('canteenSelect').value;
         if (confirm('确认删除评价信息?')) {
             const postOptions = {
