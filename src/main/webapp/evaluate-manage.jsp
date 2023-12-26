@@ -6,16 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>食堂评价信息管理</title>
     <link rel="stylesheet" type="text/css" href="assets/css/manage.css">
-    <style>
-        .canteenSelect {
-            padding: 8px;
-            font-size: 16px;
-            width: 200px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
 <h2>食堂评价信息列表</h2>
@@ -30,11 +20,11 @@
 <table id="reviewTable" border="1">
     <thead>
     <tr>
-        <th>编号</th>
-        <th>用户</th>
-        <th>食堂</th>
+        <th>评价ID</th>
+        <th>用户ID</th>
+        <th>食堂ID</th>
         <th>评价内容</th>
-        <th>回复管理员</th>
+        <th>回复管理员ID</th>
         <th>回复内容</th>
         <th>操作</th>
     </tr>
@@ -59,9 +49,13 @@
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `type=getListByCanteenId&canteenId=${selectedCanteenId}`,
+            // body: 'type=getListByCanteenId&canteenId='+selectedCanteenId,
+            body: new URLSearchParams({
+                type: 'getListByCanteenId',
+                canteenId: selectedCanteenId,
+            }),
         };
 
         fetchData('CanteenEvaluateServlet', postOptions)

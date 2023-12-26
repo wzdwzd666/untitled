@@ -12,6 +12,7 @@
   <h2>食堂信息列表</h2>
 </header>
 <section>
+  <input type="submit" value="添加新食堂" onclick="document.getElementById('newDialog').showModal();">
   <table id="canteenTable">
     <thead>
     <tr>
@@ -38,7 +39,6 @@
     </c:forEach>
     </tbody>
   </table>
-  <input type="submit" value="添加新食堂" onclick="document.getElementById('newDialog').showModal();">
 
   <!-- 编辑弹窗 -->
   <dialog id="editDialog">

@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name="CanteenEvaluateServlet", value="/CanteenEvaluateServlet")
@@ -28,13 +27,6 @@ public class CanteenEvaluateServlet extends HttpServlet {
             resp.setContentType("text/plain;charset=UTF-8");
             out.println(gson.toJson(canteenEvaluateList));
             out.close();
-        } else if (type.equals("getListByAdminId")) {
-            String s;
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req,resp);
     }
 }

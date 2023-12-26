@@ -12,6 +12,7 @@
     <h2>管理员账号列表</h2>
 </header>
 <section>
+    <input type="submit" value="添加新管理员" onclick="document.getElementById('newDialog').showModal()">
     <table id="adminTable">
         <thead>
         <tr>
@@ -46,7 +47,6 @@
         </c:forEach>
         </tbody>
     </table>
-    <input type="submit" value="添加新管理员" onclick="document.getElementById('newDialog').showModal()">
 
     <!-- 编辑弹窗 -->
     <dialog id="editDialog">
