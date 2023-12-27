@@ -11,18 +11,16 @@ public class Food implements Serializable {
     String cuisine;
     String image;
     String price;
-    String info;
     public Food(){
 
     }
-    public Food(String id, String name, String canteenId, String cuisine, String image, String price, String info){
+    public Food(String id, String name, String canteenId, String cuisine, String image, String price){
         this.id=id;
         this.name=name;
         this.canteenId=canteenId;
         this.cuisine=cuisine;
         this.image=image;
         this.price=price;
-        this.info=info;
     }
 
     public void setId(String id) {
@@ -73,11 +71,4 @@ public class Food implements Serializable {
         return price;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
-    public String getInfo() {
-        return info;
-    }
 }

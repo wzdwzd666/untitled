@@ -1,9 +1,6 @@
 package com.servlet;
 
-import com.bean.Admin;
-import com.bean.CanteenEvaluate;
 import com.bean.Topic;
-import com.dao.CanteenEvaluateListDao;
 import com.dao.TopicDao;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -14,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @WebServlet(name="TopicServlet", value="/TopicServlet")
@@ -55,13 +50,16 @@ public class TopicServlet extends HttpServlet {
             case "delete": {
                 String id = req.getParameter("id");
                 TopicDao.deleteTopic(id);
-//                String sql="SELECT * FROM topic";
-//                List<Topic> topicList = TopicDao.findTopic(sql);
-//                PrintWriter out = resp.getWriter();
-//                resp.setContentType("text/plain;charset=UTF-8");
-//                out.println(gson.toJson(topicList));
-//                out.close();
                 break;
+            }
+            case "searchByTitle": {
+                String searchTitle=req.getParameter("searchTitle");
+                String sql="SELECT * FROM topic WHERE title like '%"+searchTitle+"%'";
+                List<Topic> topicList=TopicDao.findTopic(sql);
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(topicList));
+                out.close();
             }
         }
     }

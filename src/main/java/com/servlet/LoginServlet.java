@@ -23,7 +23,6 @@ public class LoginServlet extends HttpServlet {
         String type=request.getParameter("type");
         String account=request.getParameter("account");
         String password=request.getParameter("password");
-        ServletContext context=request.getServletContext();
         if(type.equals("user")){
             User user= UserDao.findUserByAccount(account);
             if(user==null) {
@@ -43,8 +42,6 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session=request.getSession();
                 session.setAttribute("admin",admin);
                 if(admin.getCanteenId()==null){
-                    List<Admin> adminList=AdminDao.findAllAdmin();
-                    context.setAttribute("adminList",adminList);
                     request.getRequestDispatcher("/systemPage.jsp").forward(request,response);
                 }else {
                     request.getRequestDispatcher("/staffCanteenPage.jsp").forward(request,response);

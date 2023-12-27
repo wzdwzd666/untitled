@@ -58,6 +58,21 @@ public class CanteenServlet extends HttpServlet {
                     }
                 }
                 break;
+            case "staffEdit":
+                String canteenId=req.getParameter("canteenId");
+                String canteenName=req.getParameter("canteenName");
+                String canteenStartTime=req.getParameter("canteenStartTime");
+                String canteenEndTime=req.getParameter("canteenEndTime");
+                String canteenInfo=req.getParameter("canteenInfo");
+                Canteen canteen1=new Canteen(canteenId,canteenName,canteenStartTime,canteenEndTime,canteenInfo);
+                CanteenDao.editCanteenById(canteen1);
+                for(i=0;i<canteenList.size();i++){
+                    if(canteenList.get(i).getId().equals(canteenId)){
+                        canteenList.set(i,canteen1);
+                        break;
+                    }
+                }
+                break;
             default:
                 return;
         }

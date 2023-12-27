@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-image: url("../image/back/loginBack.jpg");
+    background-image: url("../image/page/loginBack.jpg");
     background-repeat: no-repeat;/*图片不重复*/
     overflow: hidden;/*溢出隐藏*/
     background-size: cover;/*背景覆盖窗口*/

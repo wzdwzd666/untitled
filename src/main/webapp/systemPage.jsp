@@ -17,15 +17,15 @@
 </header>
 <nav>
   <a class="align-left">编号:${admin.id},系统管理员:${admin.name}</a>
-  <a href="canteen-manage.jsp" target="frame" id="canteen" onclick="changeColor('canteen')" class="selected">食堂管理</a>
-  <a href="account-manage.jsp" target="frame" id="account" onclick="changeColor('account')">账号管理</a>
-  <a href="evaluate-manage.jsp" target="frame" id="evaluate" onclick="changeColor('evaluate')">评价信息</a>
-  <a href="topic-manage.jsp" target="frame" id="community" onclick="changeColor('community')">交流社区</a>
+  <a href="system-canteen-manage.jsp" target="frame" id="canteen" onclick="changeColor('canteen')" class="selected">食堂管理</a>
+  <a href="system-account-manage.jsp" target="frame" id="account" onclick="changeColor('account')">账号管理</a>
+  <a href="system-evaluate-manage.jsp" target="frame" id="evaluate" onclick="changeColor('evaluate')">评价信息</a>
+  <a href="system-topic-manage.jsp" target="frame" id="community" onclick="changeColor('community')">交流社区</a>
   <a href="index.jsp" class="align-right">退出登录</a>
-  <a href="user-detail.jsp" class="align-right" target="frame" id="detail" onclick="changeColor('detail')">个人信息</a>
+<!--  <a href="user-detail.jsp" class="align-right" target="frame" id="detail" onclick="changeColor('detail')">个人信息</a>-->
 </nav>
 <section>
-  <iframe name="frame" id="frame" src="canteen-manage.jsp"></iframe>
+  <iframe name="frame" id="frame" src="system-canteen-manage.jsp"></iframe>
 </section>
 </body>
 <script>

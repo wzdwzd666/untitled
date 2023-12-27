@@ -29,10 +29,12 @@ public class AdminServlet extends HttpServlet {
         Admin admin=new Admin(id,account,name,password,canteenId);
         ServletContext context=req.getServletContext();
         List<Admin> adminList= (List<Admin>) context.getAttribute("adminList");
+        String sql;
         int i;
         switch (type) {
             case "edit":
-                AdminDao.editAdminById(admin);
+                sql = "UPDATE admin SET name = '" + admin.getName() + "', password = '" + admin.getPassword() + "', canteen_id = '" + admin.getCanteenId() + "' WHERE id = " + admin.getId();
+                AdminDao.editAdmin(sql);
                 for(i=0;i<adminList.size();i++){
                     if(adminList.get(i).getId().equals(id)){
                         adminList.set(i,admin);
@@ -59,6 +61,20 @@ public class AdminServlet extends HttpServlet {
                 for(i=0;i<adminList.size();i++){
                     if(adminList.get(i).getId().equals(id)){
                         adminList.remove(i);
+                        break;
+                    }
+                }
+                break;
+            case "adminEdit":
+                sql = "UPDATE admin SET name = '" + name + "', password = '" + password + "' WHERE id = " + id;
+                AdminDao.editAdmin(sql);
+                for(i=0;i<adminList.size();i++){
+                    if(adminList.get(i).getId().equals(id)){
+                        Admin admin1=adminList.get(i);
+                        admin1.setName(name);
+                        admin1.setPassword(password);
+                        adminList.set(i,admin1);
+                        req.getSession().setAttribute("admin",admin1);
                         break;
                     }
                 }

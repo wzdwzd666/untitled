@@ -71,7 +71,7 @@
 <h2>社区话题管理</h2>
 <div>
     <label for="searchTitle">通过标题搜索:</label>
-    <input type="text" id="searchTitle" name="searchTitle" required>
+    <input type="text" id="searchTitle" name="searchTitle">
     <button onclick="searchByTitle()">搜索</button>
 </div>
 
@@ -91,21 +91,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="topic" items="${topics}">
-        <tr>
-            <td>${topic.id}</td>
-            <td>${topic.userId}</td>
-            <td>${topic.title}</td>
-            <td>${topic.time}</td>
-            <td>${topic.content}</td>
-            <td>${topic.image}</td>
-            <td>${topic.like}</td>
-            <td>
-                <button onclick="editTopic()">编辑</button>
-                <button onclick="deleteTopic()">删除</button>
-            </td>
-        </tr>
-    </c:forEach>
+
     </tbody>
 </table>
 <script>
@@ -177,23 +163,32 @@
                 }),
             };
             fetch('TopicServlet', postOptions)
-                .catch(error => console.error('Error:', error));
-            // fetchData('TopicServlet', postOptions)
             //     .then(data => renderReviewList(data));
         }
     }
-    // 新增搜索话题
+    // 给文本框添加键盘按下事件监听器
+    document.getElementById('searchTitle').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            // 如果按下的是回车键，则触发搜索操作
+            searchByTitle();
+        }
+    });
+    // 根据标题搜索话题
     function searchByTitle() {
-        var title = document.getElementById("searchTitle").value;
-
-        fetch("SearchTopicServlet?title=" + encodeURIComponent(title), {
-            method: "GET"
-        })
-            .then(response => response.text())
-            .then(data => {
-                // 更新表格内容
-                document.getElementById("topicTable").getElementsByTagName('tbody')[0].innerHTML = data;
-            })
+        const searchTitle = document.getElementById("searchTitle").value;
+        // 构造 POST 请求的选项对象
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'searchByTitle',
+                searchTitle: searchTitle,
+            }),
+        };
+        fetchData('TopicServlet', postOptions)
+            .then(data => renderTopicList(data))
             .catch(error => {
                 console.error("搜索话题出错:", error);
             });

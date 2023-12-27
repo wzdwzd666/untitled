@@ -90,18 +90,13 @@ public class AdminDao {
             throw new RuntimeException(e);
         }
     }
-    public static void editAdminById(Admin admin) {
+    public static void editAdmin(String sql) {
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
         }
         try {
-            String sql="UPDATE admin SET name = ?, password = ?, canteen_id=? WHERE id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,admin.getName());
-            statement.setString(2,admin.getPassword());
-            statement.setString(3,admin.getCanteenId());
-            statement.setString(4,admin.getId());
             statement.execute();
             statement.close();
             connection.close();
