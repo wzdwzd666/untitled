@@ -141,6 +141,7 @@
             if(review.image === undefined){
                 row.insertCell(5).textContent = ""
             }else {
+                console.log(review.image)
                 row.insertCell(5).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px; max-height: 100px;'>"
             }
             row.insertCell(6).textContent = review.like
