@@ -57,7 +57,6 @@
       alert("请先点击编辑按钮进行修改！");
       return;
     }
-    // 假设你有一个用于显示管理员姓名的元素
     const form = document.getElementById('adminForm')
     const postOptions = {
       method: 'POST', // 设置请求方法为 POST

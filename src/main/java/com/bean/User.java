@@ -23,6 +23,15 @@ public class User implements Serializable {
         this.password = password;
         this.type=type;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public void setAccount(String account) {
         this.account = account;
     }

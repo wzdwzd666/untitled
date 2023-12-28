@@ -22,7 +22,8 @@ public class RegisterServlet extends HttpServlet {
         User user= UserDao.findUserByAccount(account);
         if(user==null){
             User newUser=new User(null,account,name,password,type);
-            UserDao.insertUser(newUser);
+            int id=UserDao.insertUser(newUser);
+            newUser.setId(String.valueOf(id));
             HttpSession session=request.getSession();
             session.setAttribute("user",newUser);
             request.getRequestDispatcher("/canteenPage.jsp").forward(request,response);

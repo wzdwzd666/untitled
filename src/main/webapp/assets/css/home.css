@@ -1,0 +1,141 @@
+/* 样式表，用于定义页面的样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+header {
+    background-color: #fff;
+    padding: 6px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between; /* 新增：使元素分散对齐 */
+    align-items: center;
+}
+
+.logo {
+    text-align: center;
+}
+
+.logo h1 {
+    margin: 0;
+    color: #333;
+}
+
+.user {
+    text-align: left;
+}
+
+.user h2 {
+    margin: 0;
+    color: #333;
+}
+
+nav {
+    text-align: right;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li:last-child {
+    margin-right: 0; /* 移除最后一个元素的右边距，以防止超出 header 宽度 */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+main {
+    padding-top: 80px;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background-color: #ffcccb;
+}
+
+.hero h2 {
+    margin-bottom: 20px;
+    font-size: 36px;
+    color: #333;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #666;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #ff6666;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.features {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 50px;
+    background-color: #fff;
+}
+
+.feature {
+    text-align: center;
+    max-width: 300px;
+    margin-bottom: 30px;
+}
+
+.feature img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.testimonial {
+    text-align: center;
+    padding: 100px 20px;
+    background-color: #ffcccb;
+}
+
+.quote {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

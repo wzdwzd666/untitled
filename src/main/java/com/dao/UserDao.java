@@ -2,10 +2,7 @@ package com.dao;
 
 import com.bean.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDao {
     //根据用户名查询用户
@@ -37,18 +34,47 @@ public class UserDao {
         }
     }
     //插入新用户
-    public static void insertUser(User user){
+    public static int insertUser(User user){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return 0;
+        }
+        try {
+            String sql="INSERT INTO user(account,name,password,type) VALUES (?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1,user.getAccount());
+            statement.setString(2,user.getName());
+            statement.setString(3,user.getPassword());
+            statement.setString(4, user.getType());
+            int affectedRows = statement.executeUpdate();
+            int id=0;
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        // 在这里使用获取到的自增主键值（id）
+                        id = generatedKeys.getInt(1);
+                    }
+                }
+            }
+            statement.close();
+            connection.close();
+            return id;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void editUser(User user){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
         }
         try {
-            String sql="INSERT INTO user(account,name,password,type) VALUES (?,?,?,?)";
+            String sql="UPDATE canteen SET name = ?, password = ?, type = ? WHERE id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,user.getAccount());
-            statement.setString(2,user.getName());
-            statement.setString(3,user.getPassword());
-            statement.setString(4, user.getType());
+            statement.setString(1,user.getName());
+            statement.setString(2,user.getPassword());
+            statement.setString(3,user.getType());
+            statement.setString(4,user.getId());
             statement.execute();
             statement.close();
             connection.close();

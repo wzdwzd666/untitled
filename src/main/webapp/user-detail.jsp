@@ -1,96 +1,90 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    /* 下拉菜单外层容器 */
-    .custom-select {
-      position: relative;
-      width: 150px;
-      text-align: center;
-    }
-
-    /* 自定义样式的选择按钮 */
-    .custom-select .select-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-      cursor: pointer;
-    }
-
-    /* 下拉选项容器 */
-    .custom-select .options {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      display: none;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-top: none;
-      border-radius: 0 0 5px 5px;
-      box-sizing: border-box;
-      background-color: #fff;
-      z-index: 1;
-    }
-
-    /* 下拉选项 */
-    .custom-select .options div {
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    .custom-select .options div:hover {
-      background-color: #f0f0f0;
-    }
-
-  </style>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <title>用户信息</title>
 </head>
 <body>
 
-<div class="custom-select">
-  <div class="select-box">
-    <span>Select an option</span>
-    <span>&#9660;</span>
-  </div>
-  <div class="options">
-    <div>Option 1</div>
-    <div>Option 2</div>
-    <div>Option 3</div>
-  </div>
+<div class="container">
+  <h2>${user.type}:${user.name}</h2>
+
+  <form id="adminForm">
+
+    <label for="userAccount">用户账号:</label>
+    <input type="text" id="userAccount" name="userAccount" value="${user.account}" readonly>
+
+    <label for="userName">用户姓名:</label>
+    <input type="text" id="userName" name="userName" value="${user.name}" readonly>
+
+    <label for="userPassword">登录密码:</label>
+    <input type="text" id="userPassword" name="userPassword" value="${user.password}" readonly>
+
+    <label for="type">用户类型: ${user.type}</label>
+    <select id="type" name="type" class="custom-select" disabled>
+      <option value="${user.type}" selected>${user.type}</option>
+      <c:if test="${user.type=='学生'}">
+        <option value="老师">老师</option>
+      </c:if>
+      <c:if test="${user.type=='老师'}">
+        <option value="学生">学生</option>
+      </c:if>
+    </select>
+
+    <button type="button" onclick="toggleEdit()">编辑</button>
+    <button type="button" onclick="saveChanges()">保存</button>
+  </form>
 </div>
-
-<script>
-  // 添加下拉菜单的点击事件
-  document.querySelector('.custom-select .select-box').addEventListener('click', function() {
-    const optionsContainer = document.querySelector('.custom-select .options');
-    optionsContainer.style.display = optionsContainer.style.display === 'block' ? 'none' : 'block';
-  });
-
-  // 添加选项点击事件
-  const options = document.querySelectorAll('.custom-select .options div');
-  options.forEach(function(option) {
-    option.addEventListener('click', function() {
-      const selectedValue = this.textContent;
-      document.querySelector('.custom-select .select-box span:first-child').textContent = selectedValue;
-      document.querySelector('.custom-select .options').style.display = 'none';
-    });
-  });
-
-  // 点击页面其他地方时关闭下拉菜单
-  document.addEventListener('click', function(event) {
-    const target = event.target;
-    if (!target.closest('.custom-select')) {
-      document.querySelector('.custom-select .options').style.display = 'none';
-    }
-  });
-</script>
-
 </body>
+<script>
+  let isEditing = false; // 初始状态为不可编辑
+
+  function toggleEdit() {
+    if(isEditing===false) {
+      console.log("进入编辑")
+      document.getElementById('type').removeAttribute('disabled')
+    }else {
+      console.log("退出编辑")
+      document.getElementById('type').setAttribute('disabled', 'disabled')
+    }
+    isEditing = !isEditing; // 切换编辑状态
+    document.getElementById('userName').readOnly = !isEditing
+    document.getElementById('userPassword').readOnly = !isEditing
+  }
+
+  function saveChanges() {
+    console.log("保存")
+    if (!isEditing) {
+      // 如果是不可编辑状态
+      alert("请先点击编辑按钮进行修改！");
+      return;
+    }
+    const form = document.getElementById('adminForm')
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'edit',
+        name: form.elements["userName"].value,
+        password: form.elements["userPassword"].value,
+        userType: form.elements["type"].value,
+      }),
+    };
+    fetch("UserServlet", postOptions)
+            .then(()=> {
+              // 切换回不可编辑状态
+              toggleEdit()
+              console.log("编辑成功")
+              alert("编辑成功")
+            })
+            .catch(error => {
+              console.error("fetch 操作出现问题:", error);
+            });
+  }
+</script>
 </html>
