@@ -27,6 +27,7 @@ public class ContextListener implements ServletContextListener {
         canteenList = CanteenDao.findAllCanteen();
         foodList = FoodDao.findAllFood();
         cuisineList=FoodDao.findAllCuisine();
+        System.out.println(foodList);
         context.setAttribute("adminList",adminList);
         context.setAttribute("canteenList",canteenList);
         context.setAttribute("foodList",foodList);

@@ -3,14 +3,24 @@ package com.bean;
 import java.io.Serializable;
 
 public class Food implements Serializable {
-    String id;
-    String name;
-    String canteenId;
-    String cuisine;
-    String image;
-    String price;
+    private String id;
+    private String name;
+    private String canteenId;
+    private String cuisine;
+    private String image;
+    private String price;
+    private String recommend;
     public Food(){
 
+    }
+    public Food(String id, String name, String canteenId, String cuisine, String image, String price, String recommend){
+        this.id=id;
+        this.name=name;
+        this.canteenId=canteenId;
+        this.cuisine=cuisine;
+        this.image=image;
+        this.price=price;
+        this.recommend=recommend;
     }
     public Food(String id, String name, String canteenId, String cuisine, String image, String price){
         this.id=id;
@@ -68,6 +78,15 @@ public class Food implements Serializable {
     public String getPrice() {
         return price;
     }
+
+    public void setRecommend(String recommend) {
+        this.recommend = recommend;
+    }
+
+    public String getRecommend() {
+        return recommend;
+    }
+
     @Override
     public String toString() {
         return "Food{" +
@@ -77,6 +96,7 @@ public class Food implements Serializable {
                 ", cuisine='" + cuisine + '\'' +
                 ", image='" + image + '\'' +
                 ", price='" + price + '\'' +
+                ",recommend='" + recommend +
                 '}';
     }
 }

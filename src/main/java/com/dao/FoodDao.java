@@ -25,7 +25,8 @@ public class FoodDao {
                 String cuisine=rs.getString(4);
                 String image=rs.getString(5);
                 String price=rs.getString(6);
-                foodList.add(new Food(id,name,canteenId,cuisine,image,price));
+                String recommend=rs.getString(7);
+                foodList.add(new Food(id,name,canteenId,cuisine,image,price,recommend));
             }
             rs.close();
             statement.close();
@@ -120,6 +121,40 @@ public class FoodDao {
             statement.close();
             connection.close();
             return id;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void addRecommend(String id){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="UPDATE food SET recommend = ? WHERE id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,"推荐");
+            statement.setString(2,id);
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void deleteRecommend(String id){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="UPDATE food SET recommend = ? WHERE id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,null);
+            statement.setString(2,id);
+            statement.execute();
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

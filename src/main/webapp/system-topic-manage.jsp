@@ -4,68 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>社区话题管理</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        h2, h3 {
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3498db;
-            cursor: pointer;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-        label {
-            font-size: 16px;
-            margin-right: 10px;
-        }
-
-        /* 输入框样式 */
-        input[type="text"] {
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        /* 搜索按钮样式 */
-        button {
-            padding: 8px 12px;
-            font-size: 14px;
-            background-color: green;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/manage1.css">
 </head>
 <body>
 <h2>社区话题管理</h2>
