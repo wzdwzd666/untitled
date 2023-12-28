@@ -24,7 +24,6 @@
     </tr>
     </thead>
     <tbody>
-    <!-- 这里使用后端数据填充表格 -->
     <c:forEach var="canteen" items="${canteenList}">
       <tr id="${canteen.id}">
         <td >${canteen.id}</td>

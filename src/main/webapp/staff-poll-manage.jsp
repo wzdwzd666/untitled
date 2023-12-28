@@ -55,7 +55,7 @@
 
     .option {
       display: flex;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
 
     button {

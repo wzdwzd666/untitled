@@ -23,6 +23,10 @@ public class CanteenEvaluateServlet extends HttpServlet {
         switch (type) {
             case "getListByCanteenId": {
                 String canteenId = req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteenId();
+                }
                 PrintWriter out = resp.getWriter();
                 resp.setContentType("text/plain;charset=UTF-8");
                 out.println(gson.toJson(getListByCanteenId(canteenId)));
@@ -32,6 +36,10 @@ public class CanteenEvaluateServlet extends HttpServlet {
             case "edit": {
                 String id = req.getParameter("id");
                 String canteenId = req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteenId();
+                }
                 String replyContent = req.getParameter("replyContent");
                 //回复的管理员
                 Admin admin= (Admin)req.getSession().getAttribute("admin");

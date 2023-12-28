@@ -10,7 +10,7 @@
 <body>
 
 <div class="container">
-  <h1>食堂信息编辑</h1>
+  <h1>管理食堂信息</h1>
 
   <form id="canteenForm">
     <c:forEach var="canteen" items="${canteenList}">

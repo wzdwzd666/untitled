@@ -139,7 +139,7 @@
             row.insertCell(4).textContent = review.content
             // 插入图片
             if(review.image === undefined){
-                row.insertCell(5).textContent = ""
+                row.insertCell(5).textContent = "无"
             }else {
                 console.log(review.image)
                 row.insertCell(5).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px; max-height: 100px;'>"

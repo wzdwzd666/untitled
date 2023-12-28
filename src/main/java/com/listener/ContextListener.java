@@ -16,12 +16,12 @@ import java.util.List;
 public class ContextListener implements ServletContextListener {
     List<Admin> adminList=new ArrayList<>();
     List<Canteen> canteenList=new ArrayList<>();
-    List<CanteenEvaluate> canteenEvaluateList=new ArrayList<>();
     List<Food> foodList=new ArrayList<>();
     List<String> cuisineList=new ArrayList<>();
     List<Topic> topicList=new ArrayList<>();
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        System.out.println("ServletContext启动");
         ServletContext context=sce.getServletContext();
         adminList = AdminDao.findAllAdmin();
         canteenList = CanteenDao.findAllCanteen();

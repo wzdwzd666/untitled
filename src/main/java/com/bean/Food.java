@@ -1,7 +1,5 @@
 package com.bean;
 
-import com.mysql.cj.util.StringInspector;
-
 import java.io.Serializable;
 
 public class Food implements Serializable {
@@ -70,5 +68,15 @@ public class Food implements Serializable {
     public String getPrice() {
         return price;
     }
-
+    @Override
+    public String toString() {
+        return "Food{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", canteenId='" + canteenId + '\'' +
+                ", cuisine='" + cuisine + '\'' +
+                ", image='" + image + '\'' +
+                ", price='" + price + '\'' +
+                '}';
+    }
 }

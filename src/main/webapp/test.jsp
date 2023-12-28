@@ -10,7 +10,7 @@
   </form>
   <form action="FileServlet" method="get" enctype="multipart/form-data">
       <label>
-          <input type="text" id="path" value="\assets\image\food\rey-star-wars-the-last-jedi-4k-er-1920x1080.jpg">
+          <input type="text" id="path" name="path" value="\assets\image\food\rey-star-wars-the-last-jedi-4k-er-1920x1080.jpg">
       </label>
       <input type="submit" value="Upload">
   </form>
