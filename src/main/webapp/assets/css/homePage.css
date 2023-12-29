@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1em;
+}
+
+article {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 0.5em;
+    flex: 1 1 300px;
+    padding: 1em;
+}
+
+aside {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 0.5em;
+    flex: 0 1 300px;
+    padding: 1em;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1em;
+}
+.notice {
+    /*border: 1px solid #ccc; !* 边框样式，可以根据需要调整颜色和粗细 *!*/
+    padding: 10px; /* 内边距，确保内容与边框之间有一定的间距 */
+    margin-bottom: 10px; /* 底部外边距，确保不同 notice 之间有足够的间距 */
+    background-color: #f9f9f9; /* 背景色，可以根据需要调整 */
+}

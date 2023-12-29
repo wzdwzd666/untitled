@@ -16,7 +16,7 @@ public class CanteenDao {
             return null;
         }
         try {
-            String sql="SELECT id,name,start_time,end_time,info FROM canteen";
+            String sql="SELECT * FROM canteen";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -41,7 +41,7 @@ public class CanteenDao {
             return;
         }
         try {
-            String sql="UPDATE canteen SET name = ?, start_time = ?, end_time=?, info=? WHERE id=?";
+            String sql="UPDATE canteen SET name = ?, start_time = ?, end_time=?, info=? WHERE canteen_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,canteen.getName());
             statement.setString(2,canteen.getStartTime());
@@ -90,7 +90,7 @@ public class CanteenDao {
             return;
         }
         try {
-            String sql="DELETE FROM canteen WHERE id = ?";
+            String sql="DELETE FROM canteen WHERE canteen_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, Integer.parseInt(id));
             statement.execute();

@@ -44,9 +44,26 @@ public class TopicDao {
             return;
         }
         try {
-            String sql="DELETE FROM topic WHERE id = ?";
+            String sql="DELETE FROM topic WHERE topic_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, Integer.parseInt(id));
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void addLike(String id,String like){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="UPDATE topic SET like_count = ? WHERE topic_id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,like);
+            statement.setString(2,id);
             statement.execute();
             statement.close();
             connection.close();

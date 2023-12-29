@@ -8,6 +8,7 @@ public class Admin implements Serializable {
     String name;
     String password;
     String canteenId;
+    Canteen canteen;
     public Admin(){
 
     }
@@ -17,6 +18,13 @@ public class Admin implements Serializable {
         this.name=name;
         this.password=password;
         this.canteenId=canteenId;
+    }
+    public Admin(String id,String account,String name,String password,Canteen canteen){
+        this.id=id;
+        this.account=account;
+        this.name=name;
+        this.password=password;
+        this.canteen=canteen;
     }
 
     public void setId(String id) {
@@ -57,5 +65,13 @@ public class Admin implements Serializable {
 
     public String getCanteenId() {
         return canteenId;
+    }
+
+    public void setCanteen(Canteen canteen) {
+        this.canteen = canteen;
+    }
+
+    public Canteen getCanteen() {
+        return canteen;
     }
 }

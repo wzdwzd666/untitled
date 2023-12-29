@@ -13,5 +13,9 @@ public class TopicEvaluateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String type=req.getParameter("type");
+        switch (type){
+            case "getEvaluate":
+                break;
+        }
     }
 }

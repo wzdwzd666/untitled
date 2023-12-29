@@ -54,12 +54,39 @@ public class TopicServlet extends HttpServlet {
             }
             case "searchByTitle": {
                 String searchTitle=req.getParameter("searchTitle");
-                String sql="SELECT * FROM topic WHERE title like '%"+searchTitle+"%'";
+                String sql="SELECT * FROM topic WHERE title like_count '%"+searchTitle+"%'";
                 List<Topic> topicList=TopicDao.findTopic(sql);
                 PrintWriter out = resp.getWriter();
                 resp.setContentType("text/plain;charset=UTF-8");
                 out.println(gson.toJson(topicList));
                 out.close();
+            }
+            case "like": {
+                String id = req.getParameter("id");
+                String like = req.getParameter("like");
+                int likeCount = Integer.parseInt(like + 1);
+                TopicDao.addLike(id, String.valueOf(likeCount));
+                String sql = "SELECT * FROM topic";
+                List<Topic> topicList = TopicDao.findTopic(sql);
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(topicList));
+                out.close();
+                break;
+            }
+            case "getTopic": {
+                String id = req.getParameter("id");
+                String sql="SELECT * FROM topic WHERE id="+id;
+                List<Topic> topicList=TopicDao.findTopic(sql);
+                Topic topic= null;
+                if (topicList != null) {
+                    topic = topicList.get(0);
+                }
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(topic));
+                out.close();
+                break;
             }
         }
     }

@@ -65,7 +65,7 @@ public class FoodDao {
             return;
         }
         try {
-            String sql="UPDATE food SET name = ?, cuisine=?, image=?, price = ? WHERE id=?";
+            String sql="UPDATE food SET name = ?, cuisine=?, image=?, price = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,food.getName());
             statement.setString(2,food.getCuisine());
@@ -85,7 +85,7 @@ public class FoodDao {
             return;
         }
         try {
-            String sql="DELETE FROM food WHERE id = ?";
+            String sql="DELETE FROM food WHERE food_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, Integer.parseInt(id));
             statement.execute();
@@ -131,7 +131,7 @@ public class FoodDao {
             return;
         }
         try {
-            String sql="UPDATE food SET recommend = ? WHERE id=?";
+            String sql="UPDATE food SET recommend = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,"推荐");
             statement.setString(2,id);
@@ -148,7 +148,7 @@ public class FoodDao {
             return;
         }
         try {
-            String sql="UPDATE food SET recommend = ? WHERE id=?";
+            String sql="UPDATE food SET recommend = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,null);
             statement.setString(2,id);

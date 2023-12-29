@@ -5,20 +5,18 @@ import java.io.Serializable;
 public class TopicEvaluate implements Serializable {
     private String id;
     private String topicId;
-    private String personId;
+    private String userId;
     private String time;
     private String content;
-    private String personType;
     public TopicEvaluate(){
 
     }
-    public TopicEvaluate(String id, String topicId, String personId, String time,String content,String personType){
+    public TopicEvaluate(String id, String topicId, String userId, String time,String content){
         this.id=id;
         this.topicId=topicId;
-        this.personId=personId;
+        this.userId=userId;
         this.time=time;
         this.content=content;
-        this.personType=personType;
     }
 
     public void setId(String id) {
@@ -37,12 +35,12 @@ public class TopicEvaluate implements Serializable {
         return topicId;
     }
 
-    public void setPersonId(String personId) {
-        this.personId = personId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getPersonId() {
-        return personId;
+    public String getUserId() {
+        return userId;
     }
 
     public void setTime(String time) {
@@ -61,11 +59,4 @@ public class TopicEvaluate implements Serializable {
         return content;
     }
 
-    public void setPersonType(String personType) {
-        this.personType = personType;
-    }
-
-    public String getPersonType() {
-        return personType;
-    }
 }

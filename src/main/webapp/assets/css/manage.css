@@ -60,6 +60,9 @@ th {
     background-color: #333;
     color: white;
 }
+tr {
+    cursor: pointer;
+}
 
 form {
     width: 50%;

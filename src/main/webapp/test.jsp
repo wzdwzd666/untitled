@@ -1,164 +1,115 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
+<html lang="en">
 <head>
-    <title>食堂交流社区</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食堂交流社区首页</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007DDB;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: green;
+            padding: 0.5em;
+        }
+        /*nav {*/
+        /*    position: fixed;*/
+        /*    top: 0;*/
+        /*    left: 0;*/
+        /*    width: 100%;*/
+        /*    display: flex;*/
+        /*    justify-content: space-around;*/
+        /*    background-color: green;*/
+        /*    padding: 0.5em;*/
+        /*    z-index: 1000; !* 为了确保导航栏在其他元素之上，可以设置一个较大的 z-index 值 *!*/
+        /*}*/
+
+        section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 1em;
+        }
+
+        article {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 0.5em;
+            flex: 1 1 300px;
+            padding: 1em;
+        }
+
+        aside {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 0.5em;
+            flex: 0 1 300px;
+            padding: 1em;
+        }
+
+        /*footer {*/
+        /*    background-color: #333;*/
+        /*    color: #fff;*/
+        /*    text-align: center;*/
+        /*    padding: 1em;*/
+        /*}*/
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em;
+        }
+        .notice {
+            /*border: 1px solid #ccc; !* 边框样式，可以根据需要调整颜色和粗细 *!*/
+            padding: 10px; /* 内边距，确保内容与边框之间有一定的间距 */
+            margin-bottom: 10px; /* 底部外边距，确保不同 notice 之间有足够的间距 */
+            background-color: #f9f9f9; /* 背景色，可以根据需要调整 */
+        }
+        iframe{
+            width: 100%;
+            height: 100%;
+            /*margin: 0;*/
+            /*padding: 0;*/
+            border: none;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <nav>
-        <div class="logo">
-            <img src="logo.png" alt="食堂交流社区">
-        </div>
-        <div class="user">
-            欢迎，[用户名]
-            <ul>
-                <li><a href="#">个人信息</a></li>
-                <li><a href="#">设置</a></li>
-                <li><a href="#">退出</a></li>
-            </ul>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">社区</a></li>
-            <li><a href="#">食堂推荐</a></li>
-            <li><a href="#">投票调查</a></li>
-            <li><a href="#">食堂排名</a></li>
-            <li><a href="#">菜品排名</a></li>
-            <li><a href="#">投诉建议</a></li>
-        </ul>
-        <div class="notifications">
-            <ul>
-                <li><a href="#">你有1条未读评论</a></li>
-                <li><a href="#">你有2条未读点赞</a></li>
-                <li><a href="#">你有1条未读投诉回复</a></li>
-            </ul>
-        </div>
-    </nav>
+    <h1>综合信息首页</h1>
 </header>
-<main>
-    <iframe src="canteenHome.jsp"></iframe>
-</main>
+
+<nav>
+    <a href="#">首页</a>
+    <a href="#">促销信息</a>
+    <a href="#">投票调查</a>
+    <a href="#">食堂推荐</a>
+    <a href="#">社区热门</a>
+    <a href="#">排名信息</a>
+</nav>
+<iframe src="homePage.jsp"></iframe>
+<footer>
+    &copy; 2023 食堂交流管理社区
+</footer>
 </body>
-<style>
-    /* CSS代码 */
-
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    header {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-    }
-
-    .logo {
-        float: left;
-    }
-
-    .logo img {
-        height: 50px;
-    }
-
-    .user {
-        float: right;
-    }
-
-    .user ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .user ul li {
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .user ul li a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .nav-links {
-        float: right;
-    }
-
-    .nav-links ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .nav-links ul li {
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .nav-links ul li a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .notifications {
-        float: right;
-    }
-
-    .notifications ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .notifications ul li {
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .notifications ul li a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    main {
-        margin-top: 50px;
-    }
-
-    iframe {
-        width: 100%;
-        height: 800px;
-    }
-
-    .home-content {
-        padding: 20px;
-    }
-
-    .module {
-        margin-bottom: 20px;
-    }
-
-    .module h2 {
-        font-size: 1.5em;
-        margin-bottom: 10px;
-    }
-
-    .module ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .module ul li {
-        margin-bottom: 5px;
-    }
-
-    .module ul li a {
-        color: #333;
-        text-decoration: none;
-    }
-</style>
 </html>

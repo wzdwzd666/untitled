@@ -1,6 +1,5 @@
 package com.dao;
 
-import com.bean.CanteenEvaluate;
 import com.bean.Complaint;
 
 import java.sql.Connection;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComplainDao {
+public class ComplaintDao {
     public static List<Complaint> findComplaint(String sql){
         List<Complaint> complaintList=new ArrayList<>();
         Connection connection= MyConnection.getConnection();
@@ -44,7 +43,7 @@ public class ComplainDao {
             return;
         }
         try {
-            String sql="UPDATE complaint SET admin_id = ?, reply_content = ? WHERE id=?";
+            String sql="UPDATE complaint SET admin_id = ?, reply_content = ? WHERE complaint_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,adminId);
             statement.setString(2,replyContent);

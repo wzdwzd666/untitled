@@ -43,7 +43,7 @@ public class CanteenEvaluateListDao {
             return;
         }
         try {
-            String sql="UPDATE canteen_evaluate SET reply_admin_id = ?, reply_content = ? WHERE id=?";
+            String sql="UPDATE canteen_evaluate SET reply_admin_id = ?, reply_content = ? WHERE canteen_evaluate_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,adminId);
             statement.setString(2,replyContent);
@@ -61,9 +61,27 @@ public class CanteenEvaluateListDao {
             return;
         }
         try {
-            String sql="DELETE FROM canteen_evaluate WHERE id = ?";
+            String sql="DELETE FROM canteen_evaluate WHERE canteen_evaluate_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, Integer.parseInt(id));
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void insertEvaluate(CanteenEvaluate canteenEvaluate){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="INSERT INTO canteen_evaluate(user_id,canteen_id,content) VALUES (?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,canteenEvaluate.getUserId());
+            statement.setString(2,canteenEvaluate.getCanteenId());
+            statement.setString(3,canteenEvaluate.getContent());
             statement.execute();
             statement.close();
             connection.close();

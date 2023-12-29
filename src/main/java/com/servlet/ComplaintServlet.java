@@ -2,7 +2,7 @@ package com.servlet;
 
 import com.bean.Admin;
 import com.bean.Complaint;
-import com.dao.ComplainDao;
+import com.dao.ComplaintDao;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,7 +36,7 @@ public class ComplaintServlet extends HttpServlet {
                 String replyContent = req.getParameter("replyContent");
                 //回复的管理员
                 String adminId = admin.getId();
-                ComplainDao.editComplaintById(id, adminId, replyContent);
+                ComplaintDao.editComplaintById(id, adminId, replyContent);
                 PrintWriter out = resp.getWriter();
                 resp.setContentType("text/plain;charset=UTF-8");
                 out.println(gson.toJson(getListByCanteenId(canteenId)));
@@ -47,6 +47,6 @@ public class ComplaintServlet extends HttpServlet {
     }
     public List<Complaint> getListByCanteenId(String canteenId){
         String sql="SELECT * FROM complaint WHERE canteen_id="+canteenId;
-        return ComplainDao.findComplaint(sql);
+        return ComplaintDao.findComplaint(sql);
     }
 }

@@ -2,6 +2,7 @@ package com.servlet;
 
 import com.bean.Admin;
 import com.bean.CanteenEvaluate;
+import com.bean.User;
 import com.dao.CanteenEvaluateListDao;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -61,6 +62,17 @@ public class CanteenEvaluateServlet extends HttpServlet {
                 out.close();
                 break;
             }
+            case "userReply":
+                String canteenId=req.getParameter("canteenId");
+                String reply=req.getParameter("reply");
+                User user= (User) req.getSession().getAttribute("user");
+                CanteenEvaluate canteenEvaluate=new CanteenEvaluate(null,user.getId(),canteenId,reply,null,null);
+                CanteenEvaluateListDao.insertEvaluate(canteenEvaluate);
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(getListByCanteenId(canteenId)));
+                out.close();
+                break;
         }
     }
     public List<CanteenEvaluate> getListByCanteenId(String canteenId){

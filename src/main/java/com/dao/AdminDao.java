@@ -15,7 +15,7 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="SELECT id,account,name,password,canteen_id From admin where account=?";
+            String sql="SELECT * From admin where account=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,loginAccount);
             ResultSet rs=statement.executeQuery();
@@ -42,7 +42,7 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="SELECT id,account,name,password,canteen_id FROM admin WHERE canteen_id IS NOT NULL";
+            String sql="SELECT * FROM admin WHERE canteen_id IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -110,7 +110,7 @@ public class AdminDao {
             return;
         }
         try {
-            String sql="DELETE FROM admin WHERE id = ?";
+            String sql="DELETE FROM admin WHERE admin_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, Integer.parseInt(id));
             statement.execute();
