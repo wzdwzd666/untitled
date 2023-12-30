@@ -10,17 +10,17 @@
 <body>
 <h2>管理食堂投诉</h2>
 
-<h3>管理食堂:${admin.canteenName}</h3>
+<h3>管理食堂:${admin.canteen.name}</h3>
 
 <table id="reviewTable">
   <thead>
   <tr>
     <th>投诉ID</th>
-    <th>用户ID</th>
-    <th>食堂ID</th>
+    <th>用户</th>
+    <th>食堂</th>
     <th>时间</th>
     <th>投诉内容</th>
-    <th>回复管理员ID</th>
+    <th>回复管理员</th>
     <th>回复内容</th>
     <th>操作</th>
   </tr>
@@ -68,11 +68,11 @@
       const row = tableBody.insertRow(-1);
       row.id = review.id
       row.insertCell(0).textContent = review.id
-      row.insertCell(1).textContent = review.userId
-      row.insertCell(2).textContent = review.canteenId
+      row.insertCell(1).textContent = review.user.name
+      row.insertCell(2).textContent = review.canteen.name
       row.insertCell(3).textContent = review.time;
       row.insertCell(4).textContent = review.content;
-      row.insertCell(5).textContent = review.adminId
+      row.insertCell(5).textContent = review.admin.name
       row.insertCell(6).textContent = review.replyContent
       row.insertCell(7).innerHTML = "<button onclick=\"editReview('"+review.id+"', '"+review.replyContent+"')\">回复</button>"
     });

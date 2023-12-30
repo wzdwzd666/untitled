@@ -1,6 +1,9 @@
 package com.dao;
 
+import com.bean.Admin;
+import com.bean.Canteen;
 import com.bean.Complaint;
+import com.bean.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,24 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComplaintDao {
-    public static List<Complaint> findComplaint(String sql){
+    public static List<Complaint> getByCanteenId(String canteenId){
         List<Complaint> complaintList=new ArrayList<>();
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return null;
         }
         try {
+            String sql="SELECT complaint.*, user.name AS user_name, canteen.name AS canteen_name, admin.name AS admin_name FROM complaint\n"+
+                    "LEFT JOIN user ON user.user_id = complaint.user_id\n"+
+                    "LEFT JOIN canteen ON canteen_id = complaint.canteen_id\n"+
+                    "LEFT JOIN admin ON admin_id = complaint.admin_id\n"+
+                    "WHERE complaint.canteen_id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,canteenId);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
-                String id=rs.getString(1);
-                String user_id=rs.getString(2);
-                String canteen_id=rs.getString(3);
-                String time=rs.getString(4);
-                String content=rs.getString(5);
-                String admin_id=rs.getString(6);
-                String reply_content=rs.getString(7);
-                complaintList.add(new Complaint(id,user_id,canteen_id,time,content,admin_id,reply_content));
+                String id=rs.getString("complaint_id");
+                User user=new User();
+                user.setName(rs.getString("user_name"));
+                Canteen canteen=new Canteen();
+                canteen.setName(rs.getString("canteen_name"));
+                String time=rs.getString("time");
+                String content=rs.getString("content");
+                Admin admin=new Admin();
+                admin.setName(rs.getString("admin_name"));
+                String reply_content=rs.getString("reply_content");
+                complaintList.add(new Complaint(id,user,canteen,time,content,admin,reply_content));
             }
             rs.close();
             statement.close();

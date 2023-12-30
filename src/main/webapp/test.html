@@ -1,0 +1,85 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+    <title>微博帖子</title>
+    <style>
+        .post {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .user-info {
+            margin-left: 10px;
+        }
+
+        .username {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .post-content {
+            margin-top: 10px;
+        }
+
+        .post-image {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .post-footer {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #dcdcdc;
+        }
+    </style>
+</head>
+<body>
+<div class="post">
+    <div class="post-header">
+        <img src="avatar.jpg" class="avatar">
+        <div class="user-info">
+            <h2 class="username">用户名</h2>
+            <p class="timestamp">时间戳</p>
+        </div>
+    </div>
+    <div class="post-content">
+        <p>帖子内容</p>
+        <img src="image.jpg" class="post-image">
+    </div>
+    <div class="post-footer">
+        <button class="like-button">赞</button>
+        <button class="comment-button">评论</button>
+        <button class="share-button">分享</button>
+    </div>
+</div>
+</body>
+
+</html>

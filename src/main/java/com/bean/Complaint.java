@@ -4,23 +4,23 @@ import java.io.Serializable;
 
 public class Complaint implements Serializable {
     private String id;
-    private String userId;
-    private String canteenId;
+    private User user;
+    private Canteen canteen;
     private String time;
     private String content;
-    private String adminId;
+    private Admin admin;
     private String replyContent;
 
     // 无参构造方法
     public Complaint() {
     }
-    public Complaint(String id, String userId, String canteenId, String time, String content, String adminId,  String replyContent) {
+    public Complaint(String id, User user, Canteen canteen, String time, String content, Admin admin,  String replyContent) {
         this.id = id;
-        this.userId = userId;
-        this.canteenId = canteenId;
+        this.user = user;
+        this.canteen = canteen;
         this.time = time;
         this.content = content;
-        this.adminId = adminId;
+        this.admin = admin;
         this.replyContent = replyContent;
     }
 
@@ -33,20 +33,20 @@ public class Complaint implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public User getUser() {
+        return user;
     }
 
-    public String getCanteenId() {
-        return canteenId;
+    public void setCanteen(Canteen canteen) {
+        this.canteen = canteen;
     }
 
-    public void setCanteenId(String canteenId) {
-        this.canteenId = canteenId;
+    public Canteen getCanteen() {
+        return canteen;
     }
 
     public String getTime() {
@@ -65,12 +65,12 @@ public class Complaint implements Serializable {
         this.content = content;
     }
 
-    public String getAdminId() {
-        return adminId;
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 
-    public void setAdminId(String adminId) {
-        this.adminId = adminId;
+    public Admin getAdmin() {
+        return admin;
     }
 
     public String getReplyContent() {
@@ -81,15 +81,4 @@ public class Complaint implements Serializable {
         this.replyContent = replyContent;
     }
 
-    @Override
-    public String toString() {
-        return "Complaint{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", canteenId='" + canteenId + '\'' +
-                ", time='" + time + '\'' +
-                ", content='" + content + '\'' +
-                ", adminId='" + adminId + '\'' +
-                '}';
-    }
 }

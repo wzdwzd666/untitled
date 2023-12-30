@@ -20,8 +20,8 @@
       <th>菜系</th>
       <th>图片</th>
       <th>价格</th>
-      <th>是否推荐<th>
-      <th>推荐时间<th>
+      <th>是否推荐</th>
+      <th>推荐时间</th>
       <th>操作</th>
     </tr>
     </thead>
