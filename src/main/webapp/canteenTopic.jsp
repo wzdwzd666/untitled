@@ -78,9 +78,9 @@
       }
       row.insertCell(6).textContent = review.like
       row.insertCell(7).innerHTML = "<button onclick=\"likeTopic('"+review.id+"','"+review.like+"')\">点赞</button> " +
-              "<button onclick=\"window.location='topicDetail.jsp?topicId="+review.id+"&userId="+review.userId+"'\">查看</button>"
+              "<button onclick=\"window.location='detail-topic.jsp?topicId="+review.id+"&userId="+review.userId+"'\">查看</button>"
       // row.insertCell(7).innerHTML = "<button onclick=\"likeTopic('"+review.id+"','"+review.like+"')\">点赞</button> " +
-      //         "<button onclick=\"window.location='topicDetail.jsp?topicId="+encodeURIComponent(review.id)+
+      //         "<button onclick=\"window.location='detail-topic.jsp?topicId="+encodeURIComponent(review.id)+
       //         "&userId="+encodeURIComponent(review.userId)+
       //         "&title="+encodeURIComponent(review.title)+
       //         "&time="+encodeURIComponent(review.time)+

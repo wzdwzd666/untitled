@@ -9,7 +9,7 @@
   <section>
     <article>
       <h2>最新活动公告</h2>
-      <div id="notice" class="notice">
+      <div id="notice" class="info">
 
       </div>
     </article>
@@ -21,7 +21,9 @@
 
     <article>
       <h2>最新食堂推荐菜品</h2>
-      <!-- 添加最新食堂推荐菜品的内容 -->
+      <div id="recommend" class="info">
+
+      </div>
     </article>
 
     <article>
@@ -36,7 +38,10 @@
   </section>
   </body>
   <script>
-    window.onload=getNotice
+    window.onload = function() {
+      getNotice();
+      getRecommend();
+    };
     function fetchData(url, options) {
       return fetch(url, options)
               .then(response => response.json())
@@ -64,11 +69,11 @@
         const noticeElement = document.createElement("div");
         noticeElement.classList.add("notice");
 
-        const adminElement = document.createElement("h3");
-        adminElement.textContent = "管理员:"+noticeData.admin.name+" 食堂:"+noticeData.admin.canteen.name;
-
         const titleElement = document.createElement("h2");
         titleElement.textContent = "标题："+noticeData.title;
+
+        const adminElement = document.createElement("h3");
+        adminElement.textContent = "管理员:"+noticeData.admin.name+" 食堂:"+noticeData.admin.canteen.name;
 
         const timeElement = document.createElement("p");
         timeElement.textContent = "时间："+noticeData.time;
@@ -76,12 +81,54 @@
         const contentElement = document.createElement("p");
         contentElement.textContent = "内容："+noticeData.content;
 
-        noticeElement.appendChild(adminElement)
         noticeElement.appendChild(titleElement);
+        noticeElement.appendChild(adminElement)
         noticeElement.appendChild(timeElement);
         noticeElement.appendChild(contentElement);
 
         noticeContainer.appendChild(noticeElement);
+      });
+    }
+    function getRecommend(){
+      const postOptions = {
+        method: 'POST', // 设置请求方法为 POST
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          type: 'getList',
+        }),
+      };
+      fetchData('RecommendServlet', postOptions)
+              .then(data => renderRecommend(data));
+    }
+    function renderRecommend(list) {
+      const recommendContainer = document.getElementById('recommend');
+      // 清空容器
+      recommendContainer.innerHTML = "";
+
+      list.forEach(data => {
+        const element = document.createElement("div");
+        element.classList.add("recommend");
+
+        const canteenElement = document.createElement("h2");
+        canteenElement.textContent = "食堂："+data.canteenName;
+
+        const foodElement = document.createElement("h4");
+        foodElement.textContent = "菜品:"+data.food.name+" 菜系:"+data.food.cuisine+" 价格:"+data.food.price;
+
+        const timeElement = document.createElement("p");
+        timeElement.textContent = "时间："+data.time;
+
+        const imageElement = document.createElement("p");
+        imageElement.innerHTML = "<img alt='图片' style='width: 300px;' src="+data.food.image+">";
+
+        element.appendChild(canteenElement);
+        element.appendChild(foodElement)
+        element.appendChild(timeElement);
+        element.appendChild(imageElement);
+
+        recommendContainer.appendChild(element);
       });
     }
   </script>

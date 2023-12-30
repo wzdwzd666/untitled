@@ -15,17 +15,21 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="SELECT * From admin where account=?";
+            String sql="SELECT admin.*, canteen.name AS canteen_name FROM admin \n" +
+                    "LEFT JOIN canteen ON canteen.canteen_id = admin.canteen_id\n"+
+                    "WHERE admin.account=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,loginAccount);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
-                String id=rs.getString(1);
-                String account=rs.getString(2);;
-                String name=rs.getString(3);
-                String password=rs.getString(4);
-                String canteenId=rs.getString(5);
-                admin=new Admin(id,account,name,password,canteenId);
+                String id=rs.getString("admin_id");
+                String account=rs.getString("account");;
+                String name=rs.getString("name");
+                String password=rs.getString("password");
+                Canteen canteen=new Canteen();
+                canteen.setId(rs.getString("canteen_id"));
+                canteen.setName(rs.getString("canteen_name"));
+                admin=new Admin(id,account,name,password,canteen);
             }
             rs.close();
             statement.close();
@@ -42,16 +46,20 @@ public class AdminDao {
             return null;
         }
         try {
-            String sql="SELECT * FROM admin WHERE canteen_id IS NOT NULL";
+            String sql="SELECT admin.*, canteen.name AS canteen_name FROM admin \n" +
+                    "JOIN canteen ON canteen.canteen_id=admin.canteen_id\n"+
+                    "WHERE admin.canteen_id IS NOT NULL";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
-                String id=rs.getString(1);
-                String account=rs.getString(2);
-                String name=rs.getString(3);
-                String password=rs.getString(4);
-                String canteenId=rs.getString(5);
-                adminList.add(new Admin(id,account,name,password,canteenId));
+                String id=rs.getString("admin_id");
+                String account=rs.getString("account");
+                String name=rs.getString("name");
+                String password=rs.getString("password");
+                Canteen canteen=new Canteen();
+                canteen.setId(rs.getString("canteen_id"));
+                canteen.setName(rs.getString("canteen_name"));
+                adminList.add(new Admin(id,account,name,password,canteen));
             }
             rs.close();
             statement.close();
@@ -61,42 +69,36 @@ public class AdminDao {
             throw new RuntimeException(e);
         }
     }
-    public static int insertAdmin(Admin admin){
-        Connection connection= MyConnection.getConnection();
-        if(connection==null){
-            return 0;
-        }
-        try {
-            String sql="INSERT INTO admin(account,name,password,canteen_id) VALUES (?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1,admin.getAccount());
-            statement.setString(2,admin.getName());
-            statement.setString(3,admin.getPassword());
-            statement.setString(4,admin.getCanteenId());
-            int affectedRows = statement.executeUpdate();
-            int id=0;
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        // 在这里使用获取到的自增主键值（id）
-                        id = generatedKeys.getInt(1);
-                    }
-                }
-            }
-            statement.close();
-            connection.close();
-            return id;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public static void editAdmin(String sql) {
+    public static void insertAdmin(String account,String name,String password,String canteenId){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
         }
         try {
+            String sql="INSERT INTO admin(account,name,password,canteen_id) VALUES (?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,account);
+            statement.setString(2,name);
+            statement.setString(3,password);
+            statement.setString(4,canteenId);
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void editAdmin(String id,String name,String password) {
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="UPDATE admin SET name = ?, password = ? WHERE admin_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,name);
+            statement.setString(2,password);
+            statement.setString(3,id);
             statement.execute();
             statement.close();
             connection.close();

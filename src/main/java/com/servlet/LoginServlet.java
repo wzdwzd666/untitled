@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
             }else if (user.getPassword().equals(password)) {
                 HttpSession session=request.getSession();
                 session.setAttribute("user",user);
-                request.getRequestDispatcher("/canteenHome.jsp").forward(request,response);
+                request.getRequestDispatcher("/canteen-web.jsp").forward(request,response);
             }else {
                 request.getRequestDispatcher("/index.jsp?error=password").forward(request,response);
             }
@@ -41,10 +41,10 @@ public class LoginServlet extends HttpServlet {
             } else if (admin.getPassword().equals(password)) {
                 HttpSession session=request.getSession();
                 session.setAttribute("admin",admin);
-                if(admin.getCanteenId()==null){
-                    request.getRequestDispatcher("/systemPage.jsp").forward(request,response);
+                if(admin.getCanteen().getId()==null){
+                    request.getRequestDispatcher("/system-manage.jsp").forward(request,response);
                 }else {
-                    request.getRequestDispatcher("/staffCanteenPage.jsp").forward(request,response);
+                    request.getRequestDispatcher("/staff-manage.jsp").forward(request,response);
                 }
             }else {
                 request.getRequestDispatcher("/index.jsp?error=adminPassword").forward(request,response);

@@ -18,24 +18,14 @@
     <tr>
       <th>食堂编号</th>
       <th>食堂名称</th>
-      <th>营业时间</th>
+      <th>开始营业时间</th>
+      <th>结束营业时间</th>
       <th>介绍</th>
       <th>操作</th>
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="canteen" items="${canteenList}">
-      <tr id="${canteen.id}">
-        <td >${canteen.id}</td>
-        <td >${canteen.name}</td>
-        <td >${canteen.startTime}-${canteen.endTime}</td>
-        <td >${canteen.info}</td>
-        <td>
-          <button onclick="editCanteen('${canteen.id}','${canteen.name}', '${canteen.startTime}', '${canteen.endTime}', '${canteen.info}')">编辑</button>
-          <button onclick="deleteCanteen('${canteen.id}','${canteen.name}')">删除</button>
-        </td>
-      </tr>
-    </c:forEach>
+
     </tbody>
   </table>
 
@@ -79,14 +69,58 @@
 </section>
 <script>
   let canteenId;
-  const xhr = new XMLHttpRequest();
-  function editCanteen(id, name, startTime, endTime, info) {
+  window.onload = getCanteenReviews;
+  // 使用Fetch API发送请求
+  function fetchData(url, options) {
+    return fetch(url, options)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
+  }
+
+  // 获取评价信息列表
+  function getCanteenReviews() {
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'getAll',
+      }),
+    };
+
+    fetchData('CanteenServlet', postOptions)
+            .then(data => renderReviewList(data));
+  }
+
+  // 渲染评价信息列表
+  function renderReviewList(list) {
+    console.log("渲染列表")
+    console.log(list)
+    const tableBody = document.getElementById('canteenTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+
+    list.forEach(review => {
+      const row = tableBody.insertRow(-1);
+      row.id = review.id
+      row.insertCell(0).textContent = review.id
+      row.insertCell(1).textContent = review.name
+      row.insertCell(2).textContent = review.startTime
+      row.insertCell(3).textContent = review.endTime
+      row.insertCell(4).textContent = review.info;
+      row.insertCell(5).innerHTML = "<button onclick=\"editCanteen('"+review.id+"')\">编辑</button>"+
+      " <button onclick=\"deleteCanteen('"+review.id+"','"+review.name+"')\">删除</button>"
+    });
+  }
+  function editCanteen(id) {
     console.log(id+"打开编辑弹窗")
     canteenId=id;
-    document.getElementById('newCanteenName').value = name;
-    document.getElementById('newStartTime').value = startTime;
-    document.getElementById('newEndTime').value = endTime;
-    document.getElementById('newInfo').value = info;
+    const row=document.getElementById(id)
+    document.getElementById('newCanteenName').value = row.cells[1].textContent;
+    document.getElementById('newStartTime').value = row.cells[2].textContent;
+    document.getElementById('newEndTime').value = row.cells[3].textContent;
+    document.getElementById('newInfo').value = row.cells[4].textContent
     document.getElementById('editDialog').showModal();
   }
   function saveEdit() {
@@ -94,20 +128,28 @@
     const newStartTime = document.getElementById('newStartTime').value;
     const newEndTime = document.getElementById('newEndTime').value;
     const newInfo = document.getElementById('newInfo').value;
-    xhr.open('POST', 'CanteenServlet',true)
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-    xhr.send('type=edit&id='+canteenId+'&newName='+newName+'&newStartTime='+newStartTime+'&newEndTime='+newEndTime+'&newInfo='+newInfo)
-    xhr.onreadystatechange = function () {
-      if(xhr.readyState===4) {
-        if(xhr.status===200) {
-          //更新数据
-          console.log(canteenId+"保存编辑数据")
-          location.reload();
-          alert('编辑成功');
-        }
-      }
-    }
-    document.getElementById('editDialog').close();
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'edit',
+        id: canteenId,
+        name: newName,
+        startTime: newStartTime,
+        endTime: newEndTime,
+        info: newInfo,
+      }),
+    };
+
+    fetchData('CanteenServlet', postOptions)
+            .then(data => {
+              renderReviewList(data)
+              alert("编辑成功")
+              document.getElementById('editDialog').close()
+            });
   }
   function deleteCanteen(id,name) {
     canteenId=id;
@@ -119,45 +161,54 @@
     if(!confirm("确定删除吗")){
       return
     }
-    xhr.open('POST', 'CanteenServlet', true)
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-    xhr.send('type=delete&id='+canteenId )
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          console.log(canteenId+"删除")
-          //删除
-          location.reload()
-          alert('删除成功');
-        }
-      }
-      document.getElementById('deleteDialog').close()
-    }
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'delete',
+        id: canteenId,
+      }),
+    };
+    fetchData('CanteenServlet', postOptions)
+            .then(data => {
+              renderReviewList(data)
+              alert("删除成功")
+              document.getElementById('deleteDialog').close()
+            });
   }
   function insertCanteen() {
     const newName = document.getElementById('canteenName').value;
     const newStartTime = document.getElementById('startTime').value;
     const newEndTime = document.getElementById('endTime').value;
     const newInfo = document.getElementById('info').value;
-    xhr.open('POST', 'CanteenServlet', true)
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-    xhr.send('type=insert&id=' + canteenId + '&newName=' + newName + '&newStartTime=' + newStartTime + '&newEndTime=' + newEndTime + '&newInfo=' + newInfo)
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          const result = xhr.responseText;
-          if (result === "食堂名称已存在") {
-            alert(result)
-            return
-          }
-          console.log(result+"新增食堂");
-          //更新数据
-          location.reload();
-          alert("添加成功")
-        }
-      }
-    }
-    document.getElementById('newDialog').close();
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'insert',
+        name: newName,
+        startTime: newStartTime,
+        endTime: newEndTime,
+        info: newInfo,
+      }),
+    };
+
+    fetchData('CanteenServlet', postOptions)
+            .then(data => {
+              if(data.message){
+                alert("食堂名称重复!")
+                return
+              }
+              renderReviewList(data)
+              alert("添加成功")
+              document.getElementById('newDialog').close()
+            });
   }
 </script>
 </body>

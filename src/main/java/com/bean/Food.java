@@ -5,30 +5,24 @@ import java.io.Serializable;
 public class Food implements Serializable {
     private String id;
     private String name;
-    private String canteenId;
+    private Canteen canteen;
     private String cuisine;
     private String image;
     private String price;
     private String recommend;
+    private String time;
     public Food(){
 
     }
-    public Food(String id, String name, String canteenId, String cuisine, String image, String price, String recommend){
+    public Food(String id, String name, Canteen canteen, String cuisine, String image, String price, String recommend, String time){
         this.id=id;
         this.name=name;
-        this.canteenId=canteenId;
+        this.canteen=canteen;
         this.cuisine=cuisine;
         this.image=image;
         this.price=price;
         this.recommend=recommend;
-    }
-    public Food(String id, String name, String canteenId, String cuisine, String image, String price){
-        this.id=id;
-        this.name=name;
-        this.canteenId=canteenId;
-        this.cuisine=cuisine;
-        this.image=image;
-        this.price=price;
+        this.time=time;
     }
 
     public void setId(String id) {
@@ -47,12 +41,12 @@ public class Food implements Serializable {
         return name;
     }
 
-    public void setCanteenId(String canteenId) {
-        this.canteenId = canteenId;
+    public void setCanteen(Canteen canteen) {
+        this.canteen = canteen;
     }
 
-    public String getCanteenId() {
-        return canteenId;
+    public Canteen getCanteen() {
+        return canteen;
     }
 
     public void setCuisine(String cuisine) {
@@ -87,16 +81,11 @@ public class Food implements Serializable {
         return recommend;
     }
 
-    @Override
-    public String toString() {
-        return "Food{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", canteenId='" + canteenId + '\'' +
-                ", cuisine='" + cuisine + '\'' +
-                ", image='" + image + '\'' +
-                ", price='" + price + '\'' +
-                ",recommend='" + recommend +
-                '}';
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTime() {
+        return time;
     }
 }

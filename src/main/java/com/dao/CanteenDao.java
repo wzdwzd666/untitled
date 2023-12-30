@@ -1,8 +1,6 @@
 package com.dao;
 
-import com.bean.Admin;
 import com.bean.Canteen;
-import com.bean.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,6 +33,33 @@ public class CanteenDao {
             throw new RuntimeException(e);
         }
     }
+    public static Canteen getCanteen(String canteenId){
+        Canteen canteen=null;
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT * FROM canteen WHERE canteen_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,canteenId);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString(1);
+                String name=rs.getString(2);
+                String starTime=rs.getString(3);
+                String endTime=rs.getString(4);
+                String info=rs.getString(5);
+                canteen=new Canteen(id,name,starTime,endTime,info);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return canteen;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void editCanteenById(Canteen canteen) {
         Connection connection= MyConnection.getConnection();
         if(connection==null){
@@ -55,31 +80,21 @@ public class CanteenDao {
             throw new RuntimeException(e);
         }
     }
-    public static int insertCanteen(Canteen canteen){
+    public static void insertCanteen(Canteen canteen){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
-            return 0;
+            return;
         }
         try {
             String sql="INSERT INTO canteen(name,start_time,end_time,info) VALUES (?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,canteen.getName());
             statement.setString(2,canteen.getStartTime());
             statement.setString(3,canteen.getEndTime());
             statement.setString(4,canteen.getInfo());
-            int affectedRows = statement.executeUpdate();
-            int id=0;
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        // 在这里使用获取到的自增主键值（id）
-                        id = generatedKeys.getInt(1);
-                    }
-                }
-            }
+            statement.execute();
             statement.close();
             connection.close();
-            return id;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -107,7 +122,7 @@ public class CanteenDao {
             return null;
         }
         try {
-            String sql="SELECT id From canteen where name=?";
+            String sql="SELECT name FROM canteen where name=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,name);
             ResultSet rs=statement.executeQuery();

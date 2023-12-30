@@ -17,7 +17,6 @@
             background-color: #007DDB;
             color: #fff;
             text-align: center;
-            padding: 1em;
         }
 
         nav {
@@ -26,17 +25,6 @@
             background-color: green;
             padding: 0.5em;
         }
-        /*nav {*/
-        /*    position: fixed;*/
-        /*    top: 0;*/
-        /*    left: 0;*/
-        /*    width: 100%;*/
-        /*    display: flex;*/
-        /*    justify-content: space-around;*/
-        /*    background-color: green;*/
-        /*    padding: 0.5em;*/
-        /*    z-index: 1000; !* 为了确保导航栏在其他元素之上，可以设置一个较大的 z-index 值 *!*/
-        /*}*/
 
         section {
             display: flex;
@@ -107,7 +95,7 @@
     <a href="#">社区热门</a>
     <a href="#">排名信息</a>
 </nav>
-<iframe src="homePage.jsp"></iframe>
+<iframe src="canteen-home.jsp"></iframe>
 <footer>
     &copy; 2023 食堂交流管理社区
 </footer>

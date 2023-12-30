@@ -4,6 +4,8 @@ import com.bean.Admin;
 import com.bean.Canteen;
 import com.dao.AdminDao;
 import com.dao.CanteenDao;
+import com.dao.UserDao;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,67 +23,50 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String type=req.getParameter("type");
-        String id=req.getParameter("id");
-        String account=req.getParameter("newAccount");
-        String name=req.getParameter("newName");
-        String password=req.getParameter("newPassword");
-        String canteenId=req.getParameter("newCanteenId");
-        Admin admin=new Admin(id,account,name,password,canteenId);
-        ServletContext context=req.getServletContext();
-        List<Admin> adminList= (List<Admin>) context.getAttribute("adminList");
-        String sql;
-        int i;
         switch (type) {
-            case "edit":
-                sql = "UPDATE admin SET name = '" + admin.getName() + "', password = '" + admin.getPassword() + "', canteen_id = '" + admin.getCanteenId() + "' WHERE id = " + admin.getId();
-                AdminDao.editAdmin(sql);
-                for(i=0;i<adminList.size();i++){
-                    if(adminList.get(i).getId().equals(id)){
-                        adminList.set(i,admin);
-                        break;
-                    }
-                }
+            case "getAll":{
+                getAll(resp);
                 break;
-            case "insert":
-                PrintWriter out=resp.getWriter();
-                if(AdminDao.findAdminByAccount(account)==null){
-                    int newId=AdminDao.insertAdmin(admin);
-                    admin.setId(String.valueOf(newId));
-                    adminList.add(admin);
+            }
+            case "edit": {
+                String id = req.getParameter("id");
+                String name = req.getParameter("name");
+                String password = req.getParameter("password");
+                AdminDao.editAdmin(id,name,password);
+                getAll(resp);
+                break;
+            }
+            case "insert": {
+                String account=req.getParameter("account");
+                String name=req.getParameter("name");
+                String password=req.getParameter("password");
+                String canteenId=req.getParameter("canteenId");
+                if (AdminDao.findAdminByAccount(account) == null&& UserDao.findUserByAccount(account) == null) {
+                    AdminDao.insertAdmin(account,name,password,canteenId);
+                    getAll(resp);
+                } else {
+                    PrintWriter out = resp.getWriter();
                     resp.setContentType("text/plain;charset=UTF-8");
-                    out.println(newId);
-                }else {
-                    resp.setContentType("text/plain;charset=UTF-8");
-                    out.println("accountError");
+                    out.write("{\"message\": \"账号已存在\"}");
+                    out.close();
                 }
-                out.close();
+            }
                 break;
-            case "delete":
-                AdminDao.deleteAdmin(admin.getId());
-                for(i=0;i<adminList.size();i++){
-                    if(adminList.get(i).getId().equals(id)){
-                        adminList.remove(i);
-                        break;
-                    }
-                }
+            case "delete": {
+                String id=req.getParameter("id");
+                AdminDao.deleteAdmin(id);
+                getAll(resp);
                 break;
-            case "adminEdit":
-                sql = "UPDATE admin SET name = '" + name + "', password = '" + password + "' WHERE id = " + id;
-                AdminDao.editAdmin(sql);
-                for(i=0;i<adminList.size();i++){
-                    if(adminList.get(i).getId().equals(id)){
-                        Admin admin1=adminList.get(i);
-                        admin1.setName(name);
-                        admin1.setPassword(password);
-                        adminList.set(i,admin1);
-                        req.getSession().setAttribute("admin",admin1);
-                        break;
-                    }
-                }
-                break;
+            }
             default:
-                return;
         }
-        context.setAttribute("adminList",adminList);
+    }
+    public void getAll(HttpServletResponse resp) throws IOException {
+        Gson gson=new Gson();
+        PrintWriter out=resp.getWriter();
+        List<Admin> adminList=AdminDao.findAllAdmin();
+        resp.setContentType("text/plain;charset=UTF-8");
+        out.println(gson.toJson(adminList));
+        out.close();
     }
 }

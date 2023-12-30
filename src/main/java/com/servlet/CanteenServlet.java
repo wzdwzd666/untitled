@@ -1,7 +1,10 @@
 package com.servlet;
 
+import com.bean.Admin;
 import com.bean.Canteen;
+import com.dao.AdminDao;
 import com.dao.CanteenDao;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name="CanteenServlet", value="/CanteenServlet")
@@ -16,66 +20,78 @@ public class CanteenServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String type=req.getParameter("type");
-        String id=req.getParameter("id");
-        String name=req.getParameter("newName");
-        String startTime=req.getParameter("newStartTime");
-        String endTime=req.getParameter("newEndTime");
-        String info=req.getParameter("newInfo");
-        Canteen canteen=new Canteen(id,name,startTime,endTime,info);
-        ServletContext context=req.getServletContext();
-        List<Canteen> canteenList= (List<Canteen>) context.getAttribute("canteenList");
-        int i;
+        String id = req.getParameter("id");
+        String name = req.getParameter("name");
+        String startTime = req.getParameter("startTime");
+        String endTime = req.getParameter("endTime");
+        String info = req.getParameter("info");
+        Canteen canteen = new Canteen(id, name, startTime, endTime, info);
+        Gson gson=new Gson();
         switch (type) {
-            case "edit":
+            case "getAll":{
+                getAll(resp);
+                break;
+            }
+            case "getCanteen":{
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                Canteen canteen1=CanteenDao.getCanteen(canteenId);
+                PrintWriter out=resp.getWriter();
+                System.out.println(canteen1);
+                // 获取输出流
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(canteen1));
+                out.close();
+                break;
+            }
+            case "edit": {
                 CanteenDao.editCanteenById(canteen);
-                for(i=0;i<canteenList.size();i++){
-                    if(canteenList.get(i).getId().equals(id)){
-                        canteenList.set(i,canteen);
-                        break;
-                    }
-                }
+                getAll(resp);
                 break;
-            case "insert":
-                if(CanteenDao.findCanteenByName(canteen.getName())==null){
-                    int newId=CanteenDao.insertCanteen(canteen);
-                    canteen.setId(String.valueOf(newId));
-                    canteenList.add(canteen);
+            }
+            case "insert": {
+                if (CanteenDao.findCanteenByName(canteen.getName()) == null) {
+                    CanteenDao.insertCanteen(canteen);
+                    getAll(resp);
+                } else {
+                    PrintWriter out=resp.getWriter();
                     // 获取输出流
                     resp.setContentType("text/plain;charset=UTF-8");
-                    resp.getWriter().println(newId);
-                }else {
-                    // 获取输出流
-                    resp.setContentType("text/plain;charset=UTF-8");
-                    resp.getWriter().println("食堂名称已存在");
+                    out.write("{\"message\": \"食堂名称已存在\"}");
+                    out.close();
                 }
                 break;
+            }
             case "delete":
                 CanteenDao.deleteCanteen(id);
-                for(i=0;i<canteenList.size();i++){
-                    if(canteenList.get(i).getId().equals(id)){
-                        canteenList.remove(i);
-                        break;
-                    }
-                }
+                List<Canteen> canteenList=CanteenDao.findAllCanteen();
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(canteenList));
+                out.close();
                 break;
-            case "staffEdit":
-                String canteenId=req.getParameter("canteenId");
-                String canteenName=req.getParameter("canteenName");
-                String canteenStartTime=req.getParameter("canteenStartTime");
-                String canteenEndTime=req.getParameter("canteenEndTime");
-                String canteenInfo=req.getParameter("canteenInfo");
-                Canteen canteen1=new Canteen(canteenId,canteenName,canteenStartTime,canteenEndTime,canteenInfo);
+            case "staffEdit": {
+                String canteenId = req.getParameter("canteenId");
+                String canteenName = req.getParameter("canteenName");
+                String canteenStartTime = req.getParameter("canteenStartTime");
+                String canteenEndTime = req.getParameter("canteenEndTime");
+                String canteenInfo = req.getParameter("canteenInfo");
+                Canteen canteen1 = new Canteen(canteenId, canteenName, canteenStartTime, canteenEndTime, canteenInfo);
                 CanteenDao.editCanteenById(canteen1);
-                for(i=0;i<canteenList.size();i++){
-                    if(canteenList.get(i).getId().equals(canteenId)){
-                        canteenList.set(i,canteen1);
-                        break;
-                    }
-                }
                 break;
+            }
             default:
-                return;
         }
-        context.setAttribute("canteenList",canteenList);
+    }
+    public void getAll(HttpServletResponse resp) throws IOException {
+        Gson gson=new Gson();
+        PrintWriter out=resp.getWriter();
+        List<Canteen> canteenList= CanteenDao.findAllCanteen();
+        resp.setContentType("text/plain;charset=UTF-8");
+        out.println(gson.toJson(canteenList));
+        out.close();
     }
 }

@@ -4,7 +4,9 @@ import com.bean.Canteen;
 import com.bean.Food;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FoodDao {
@@ -15,18 +17,21 @@ public class FoodDao {
             return null;
         }
         try {
-            String sql="SELECT * FROM food";
+            String sql="SELECT food.*, canteen.name AS canteen_name FROM food\n"+
+                    "LEFT JOIN canteen ON canteen.canteen_id = food.canteen_id";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
-                String id=rs.getString(1);
-                String name=rs.getString(2);
-                String canteenId=rs.getString(3);
-                String cuisine=rs.getString(4);
-                String image=rs.getString(5);
-                String price=rs.getString(6);
-                String recommend=rs.getString(7);
-                foodList.add(new Food(id,name,canteenId,cuisine,image,price,recommend));
+                String id=rs.getString("food_id");
+                String name=rs.getString("name");
+                Canteen canteen=new Canteen();
+                canteen.setName(rs.getString("canteen_name"));
+                String cuisine=rs.getString("cuisine");
+                String image=rs.getString("image");
+                String price=rs.getString("price");
+                String recommend=rs.getString("recommend");
+                String time=rs.getString("time");
+                foodList.add(new Food(id,name,canteen,cuisine,image,price,recommend,time));
             }
             rs.close();
             statement.close();
@@ -59,7 +64,7 @@ public class FoodDao {
             throw new RuntimeException(e);
         }
     }
-    public static void editFood(Food food){
+    public static void editFood(String id,String name,String cuisine,String image, String price){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
@@ -67,11 +72,11 @@ public class FoodDao {
         try {
             String sql="UPDATE food SET name = ?, cuisine=?, image=?, price = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,food.getName());
-            statement.setString(2,food.getCuisine());
-            statement.setString(3,food.getImage());
-            statement.setString(4,food.getPrice());
-            statement.setString(5,food.getId());
+            statement.setString(1,name);
+            statement.setString(2,cuisine);
+            statement.setString(3,image);
+            statement.setString(4,price);
+            statement.setString(5,id);
             statement.execute();
             statement.close();
             connection.close();
@@ -95,46 +100,40 @@ public class FoodDao {
             throw new RuntimeException(e);
         }
     }
-    public static int insertFood(Food food){
+    public static void insertFood(Food food){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
-            return 0;
+            return;
         }
         try {
             String sql="INSERT INTO food(name,canteen_id,cuisine,image,price) VALUES (?,?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,food.getName());
-            statement.setString(2,food.getCanteenId());
+            statement.setString(2,food.getCanteen().getId());
             statement.setString(3,food.getCuisine());
             statement.setString(4,food.getImage());
             statement.setString(5,food.getPrice());
-            int affectedRows = statement.executeUpdate();
-            int id=0;
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        // 在这里使用获取到的自增主键值（id）
-                        id = generatedKeys.getInt(1);
-                    }
-                }
-            }
+            statement.execute();
             statement.close();
             connection.close();
-            return id;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
     public static void addRecommend(String id){
         Connection connection= MyConnection.getConnection();
+        Date date=new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time=formatter.format(date);
         if(connection==null){
             return;
         }
         try {
-            String sql="UPDATE food SET recommend = ? WHERE food_id=?";
+            String sql="UPDATE food SET recommend = ?, time = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,"推荐");
-            statement.setString(2,id);
+            statement.setString(2,time);
+            statement.setString(3,id);
             statement.execute();
             statement.close();
             connection.close();
@@ -148,10 +147,11 @@ public class FoodDao {
             return;
         }
         try {
-            String sql="UPDATE food SET recommend = ? WHERE food_id=?";
+            String sql="UPDATE food SET recommend = ?, time = ? WHERE food_id=?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,null);
-            statement.setString(2,id);
+            statement.setString(2,null);
+            statement.setString(3,id);
             statement.execute();
             statement.close();
             connection.close();

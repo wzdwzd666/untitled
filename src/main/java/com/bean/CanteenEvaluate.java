@@ -4,10 +4,11 @@ import java.io.Serializable;
 
 public class CanteenEvaluate implements Serializable {
     private String id;
-    private String userId;
-    private String canteenId;
+    private User user;
+    private Canteen canteen;
     private String content;
-    private String replyAdminId;
+    private double rating;
+    private Admin admin;
     private String replyContent;
 
     // 无参构造方法
@@ -15,12 +16,13 @@ public class CanteenEvaluate implements Serializable {
     }
 
     // 有参构造方法
-    public CanteenEvaluate(String id, String userId, String canteenId, String content, String replyAdminId, String replyContent) {
+    public CanteenEvaluate(String id, User user, Canteen canteen, String content, double rating, Admin admin, String replyContent) {
         this.id = id;
-        this.userId = userId;
-        this.canteenId = canteenId;
+        this.user = user;
+        this.canteen = canteen;
         this.content = content;
-        this.replyAdminId = replyAdminId;
+        this.rating = rating;
+        this.admin = admin;
         this.replyContent = replyContent;
     }
 
@@ -33,20 +35,20 @@ public class CanteenEvaluate implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public User getUser() {
+        return user;
     }
 
-    public String getCanteenId() {
-        return canteenId;
+    public Canteen getCanteen() {
+        return canteen;
     }
 
-    public void setCanteenId(String canteenId) {
-        this.canteenId = canteenId;
+    public void setCanteen(Canteen canteen) {
+        this.canteen = canteen;
     }
 
     public String getContent() {
@@ -57,12 +59,20 @@ public class CanteenEvaluate implements Serializable {
         this.content = content;
     }
 
-    public String getReplyAdminId() {
-        return replyAdminId;
+    public double getRating() {
+        return rating;
     }
 
-    public void setReplyAdminId(String replyAdminId) {
-        this.replyAdminId = replyAdminId;
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Admin getAdmin() {
+        return admin;
     }
 
     public String getReplyContent() {
@@ -73,17 +83,5 @@ public class CanteenEvaluate implements Serializable {
         this.replyContent = replyContent;
     }
 
-    // 可选的 toString 方法，用于方便调试
-    @Override
-    public String toString() {
-        return "CanteenEvaluate{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", canteenId='" + canteenId + '\'' +
-                ", content='" + content + '\'' +
-                ", replyAdminId='" + replyAdminId + '\'' +
-                ", replyContent='" + replyContent + '\'' +
-                '}';
-    }
 }
 

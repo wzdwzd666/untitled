@@ -10,8 +10,7 @@
 <body>
 <h2>管理食堂评价</h2>
 
-<h3>管理食堂:${admin.canteenId}</h3>
-
+<h3>管理食堂: ${admin.canteenName}</h3>
 <table id="reviewTable">
   <thead>
   <tr>
@@ -67,10 +66,10 @@
       const row = tableBody.insertRow(-1);
       row.id = review.id
       row.insertCell(0).textContent = review.id
-      row.insertCell(1).textContent = review.userId
-      row.insertCell(2).textContent = review.canteenId
+      row.insertCell(1).textContent = review.user.name
+      row.insertCell(2).textContent = review.canteen.name
       row.insertCell(3).textContent = review.content;
-      row.insertCell(4).textContent = review.replyAdminId
+      row.insertCell(4).textContent = review.admin.name
       row.insertCell(5).textContent = review.replyContent
       row.insertCell(6).innerHTML = "<button onclick=\"editReview('"+review.id+"', '"+review.replyContent+"')\">回复</button>"
     });

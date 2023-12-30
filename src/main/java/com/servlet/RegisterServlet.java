@@ -1,6 +1,7 @@
 package com.servlet;
 
 import com.bean.User;
+import com.dao.AdminDao;
 import com.dao.UserDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,14 +20,13 @@ public class RegisterServlet extends HttpServlet {
         String account=request.getParameter("account");
         String name=request.getParameter("name");
         String password=request.getParameter("password");
-        User user= UserDao.findUserByAccount(account);
-        if(user==null){
+        if(AdminDao.findAdminByAccount(account) == null&& UserDao.findUserByAccount(account) == null){
             User newUser=new User(null,account,name,password,type);
-            int id=UserDao.insertUser(newUser);
-            newUser.setId(String.valueOf(id));
+            UserDao.insertUser(newUser);
+            User user=UserDao.findUserByAccount(account);
             HttpSession session=request.getSession();
-            session.setAttribute("user",newUser);
-            request.getRequestDispatcher("/canteenPage.jsp").forward(request,response);
+            session.setAttribute("user",user);
+            request.getRequestDispatcher("/canteen-web.jsp").forward(request,response);
         }else {
             request.getRequestDispatcher("/register.jsp?error=registerAccount").forward(request,response);
         }

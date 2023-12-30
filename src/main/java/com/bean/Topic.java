@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Topic implements Serializable {
     private String id;
-    private String userId;
+    private User user;
     private String title;
     private String time;
     private String content;
@@ -16,9 +16,9 @@ public class Topic implements Serializable {
         // 默认构造方法
     }
 
-    public Topic(String id, String userId, String title, String time, String content, String image, int like) {
+    public Topic(String id, User user, String title, String time, String content, String image, int like) {
         this.id=id;
-        this.userId=userId;
+        this.user=user;
         this.title=title;
         this.time=time;
         this.content=content;
@@ -35,12 +35,12 @@ public class Topic implements Serializable {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {

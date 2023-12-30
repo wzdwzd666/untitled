@@ -36,7 +36,7 @@ footer {
     text-align: center;
     padding: 1em;
 }
-.notice {
+.info {
     /*border: 1px solid #ccc; !* 边框样式，可以根据需要调整颜色和粗细 *!*/
     padding: 10px; /* 内边距，确保内容与边框之间有一定的间距 */
     margin-bottom: 10px; /* 底部外边距，确保不同 notice 之间有足够的间距 */

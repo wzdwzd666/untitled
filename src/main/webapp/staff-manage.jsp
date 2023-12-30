@@ -16,16 +16,15 @@
     <h2>食堂管理系统</h2>
 </header>
 <nav>
-    <a class="align-left">编号:${admin.id},食堂管理员:${admin.name}</a>
+    <a class="align-left">管理员:${admin.name} 管理食堂:${admin.canteen.id}</a>
     <a href="staff-canteen-manage.jsp" target="frame" id="canteen" onclick="changeColor('canteen')" class="selected">食堂管理</a>
     <a href="staff-food-manage.jsp" target="frame" id="food" onclick="changeColor('food')">菜品管理</a>
     <a href="staff-evaluate-manage.jsp" target="frame" id="evaluate" onclick="changeColor('evaluate')">评价信息</a>
     <a href="staff-notice-manage.jsp" target="frame" id="notice" onclick="changeColor('notice')">活动公告</a>
     <a href="staff-poll-manage.jsp" target="frame" id="poll" onclick="changeColor('poll')">投票调查</a>
     <a href="staff-complaint-manage.jsp" target="frame" id="complaint" onclick="changeColor('complaint')">投诉处理</a>
-    <a href="staff-recommend-dishes.jsp" target="frame" id="recommend" onclick="changeColor('recommend')">推荐菜品</a>
     <a href="index.jsp" class="align-right">退出登录</a>
-    <a href="admin-detail.jsp" class="align-right" target="frame" id="detail" onclick="changeColor('detail')">个人信息</a>
+    <a href="detail-admin.jsp" class="align-right" target="frame" id="detail" onclick="changeColor('detail')">个人信息</a>
 </nav>
 <section>
     <iframe name="frame" id="frame" src="staff-canteen-manage.jsp"></iframe>

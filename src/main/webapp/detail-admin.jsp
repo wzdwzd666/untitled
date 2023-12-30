@@ -64,7 +64,7 @@
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        type: 'adminEdit',
+        type: 'edit',
         id: form.elements["adminId"].value,
         newName: form.elements["adminName"].value,
         newPassword: form.elements["adminPassword"].value,

@@ -16,30 +16,17 @@
     <tr>
       <th>菜品编号</th>
       <th>菜品名称</th>
-      <th>食堂ID</th>
+      <th>食堂</th>
       <th>菜系</th>
       <th>图片</th>
       <th>价格</th>
+      <th>是否推荐<th>
+      <th>推荐时间<th>
       <th>操作</th>
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="food" items="${foodList}">
-      <c:if test="${food.canteenId==admin.canteenId}">
-        <tr id="${food.id}">
-          <td >${food.id}</td>
-          <td >${food.name}</td>
-          <td >${food.canteenId}</td>
-          <td >${food.cuisine}</td>
-          <td ><img src='${food.image}' style='max-width: 100px;' alt="food image"></td>
-          <td >${food.price}</td>
-          <td>
-            <button onclick="editFood('${food.id}')">编辑</button>
-            <button onclick="deleteFood('${food.id}')">删除</button>
-          </td>
-        </tr>
-      </c:if>
-    </c:forEach>
+
     </tbody>
   </table>
 
@@ -83,6 +70,62 @@
 </section>
 <script>
   let foodId;
+  window.onload = getFoodReviews;
+  // 使用Fetch API发送请求
+  function fetchData(url, options) {
+    return fetch(url, options)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
+  }
+
+  // 获取评价信息列表
+  function getFoodReviews() {
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'getAll',
+      }),
+    };
+
+    fetchData('FoodServlet', postOptions)
+            .then(data => {
+              renderReviewList(data)
+            });
+  }
+  // 渲染评价信息列表
+  function renderReviewList(list) {
+    console.log("渲染列表")
+    console.log(list)
+    const tableBody = document.getElementById('foodTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+
+    list.forEach(review => {
+      const row = tableBody.insertRow(-1);
+      row.id = review.id
+      row.insertCell(0).textContent = review.id
+      row.insertCell(1).textContent = review.name
+      row.insertCell(2).textContent = review.canteen.name
+      row.insertCell(3).textContent = review.cuisine
+      // 插入图片
+      if(review.image == undefined){
+        row.insertCell(4).textContent = "无"
+      }else {
+        console.log(review.image)
+        row.insertCell(4).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px'>"
+      }
+      row.insertCell(5).textContent = review.price
+      row.insertCell(6).textContent = review.recommend
+      row.insertCell(7).textContent = review.time
+      row.insertCell(8).innerHTML = "<button onclick=\"editFood('"+review.id+"')\">编辑</button>"+
+              " <button onclick=\"deleteFood('"+review.id+"','"+review.name+"')\">删除</button>"+
+              " <button onclick=\"recommend('"+review.id+"','"+review.name+"')\">推荐</button>"+
+              " <button onclick=\"deleteRecommend('"+review.id+"', '"+review.name+"')\">取消推荐</button>"
+    });
+  }
   function editFood(id) {
     console.log(id+"打开编辑弹窗")
     foodId=id
@@ -98,7 +141,7 @@
     const cuisine = document.getElementById('cuisine').value;
     const image = document.getElementById('image').files[0];
     const price = document.getElementById('price').value;
-    if(image===undefined){
+    if(image == undefined){
       console.log("未添加图片")
       const path=document.getElementById(foodId).cells[4].querySelector('img').src
       // 创建 URL 对象
@@ -121,8 +164,10 @@
         }),
       }
       fetch("FoodServlet",options)
-              .then(()=>{
+              .then(response => response.json())
+              .then(data=>{
                 console.log("保存成功")
+                renderReviewList(data)
                 location.reload()
                 document.getElementById('editDialog').close();
               })
@@ -160,8 +205,10 @@
                   }),
                 }
                 fetch("FoodServlet", options)
-                        .then(() => {
+                        .then(response => response.json())
+                        .then(data=> {
                           console.log("菜品保存成功")
+                          renderReviewList(data)
                           location.reload()
                           document.getElementById('editDialog').close();
                         })
@@ -174,8 +221,8 @@
               });
     }
   }
-  function deleteFood(id) {
-    if(!confirm("确定删除吗")){
+  function deleteFood(id,name) {
+    if(!confirm("确定删除菜品:"+name+"吗")){
       return
     }
     const path=document.getElementById(id).cells[4].querySelector('img').src
@@ -209,9 +256,10 @@
       }),
     };
     fetch("FoodServlet",foodOptions)
-            .then(() => {
+            .then(response => response.json())
+            .then(data => {
               console.log("food删除成功")
-              location.reload()
+              renderReviewList(data)
               alert("删除成功")
             })
             .catch(error => {
@@ -251,8 +299,9 @@
                 }),
               }
               fetch("FoodServlet",options)
-                      .then(()=>{
-                        location.reload()
+                      .then(response => response.json())
+                      .then(data =>{
+                        renderReviewList(data)
                         alert("添加成功")
                         document.getElementById('newDialog').close();
                       })
@@ -263,6 +312,58 @@
             .catch(error => {
               console.error("图片保存出错:", error)
             });
+  }
+  function recommend(id, name){
+    if(!confirm("确定推荐菜品:"+name+"吗")){
+      return;
+    }
+    const options={
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'addRecommend',
+        id: id,
+      }),
+    }
+    fetch("FoodServlet",options)
+            .then(response => response.json())
+            .then(data =>{
+              renderReviewList(data)
+              alert("推荐成功")
+              document.getElementById('newDialog').close();
+            })
+            .catch(error=>{
+              alert("网络错误")
+              console.error("推荐出错",error)
+            })
+  }
+  function deleteRecommend(id, name){
+    if(!confirm("确定取消推荐菜品:"+name+"吗")){
+      return;
+    }
+    const options={
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'deleteRecommend',
+        id: id,
+      }),
+    }
+    fetch("FoodServlet",options)
+            .then(response => response.json())
+            .then(data =>{
+              renderReviewList(data)
+              alert("取消推荐成功")
+              document.getElementById('newDialog').close();
+            })
+            .catch(error=>{
+              alert("网络错误")
+              console.error("推荐出错",error)
+            })
   }
 </script>
 </body>

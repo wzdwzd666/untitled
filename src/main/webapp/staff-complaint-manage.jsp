@@ -10,7 +10,7 @@
 <body>
 <h2>管理食堂投诉</h2>
 
-<h3>管理食堂:${admin.canteenId}</h3>
+<h3>管理食堂:${admin.canteenName}</h3>
 
 <table id="reviewTable">
   <thead>

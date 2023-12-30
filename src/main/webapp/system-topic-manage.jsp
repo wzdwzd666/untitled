@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>社区话题管理</title>
-    <link rel="stylesheet" href="assets/css/manage1.css">
+    <link rel="stylesheet" href="assets/css/manage.css">
 </head>
 <body>
 <h2>社区话题管理</h2>
 <div>
     <label for="searchTitle">通过标题搜索:</label>
-    <input type="text" id="searchTitle" name="searchTitle">
+    <input type="text" id="searchTitle" name="searchTitle" style="width: 200px">
     <button onclick="searchByTitle()">搜索</button>
 </div>
 
-<h3>Topic List:</h3>
+<h3>社区帖子列表:</h3>
 
 <table id="topicTable" border="1">
     <thead>
@@ -53,7 +53,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                type: 'getList',
+                type: 'getAll',
                 searchTitle: searchTitle,
             }),
         };
@@ -72,7 +72,7 @@
             const row = tableBody.insertRow(-1);
             row.id = review.id
             row.insertCell(0).textContent = review.id
-            row.insertCell(1).textContent = review.userId
+            row.insertCell(1).textContent = review.user.name
             row.insertCell(2).textContent = review.title
             row.insertCell(3).textContent = review.time;
             row.insertCell(4).textContent = review.content
@@ -81,7 +81,7 @@
                 row.insertCell(5).textContent = "无"
             }else {
                 console.log(review.image)
-                row.insertCell(5).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px; max-height: 100px;'>"
+                row.insertCell(5).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px'>"
             }
             row.insertCell(6).textContent = review.like
             row.insertCell(7).innerHTML = "<button onclick=\"deleteTopic('"+review.id+"')\">删除</button>"
