@@ -23,6 +23,7 @@ public class FoodServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String type=req.getParameter("type");
         System.out.println(type);
+        Gson gson=new Gson();
         switch (type){
             case "getAll":{
                 getAll(resp);
@@ -58,6 +59,14 @@ public class FoodServlet extends HttpServlet {
                 FoodDao.insertFood(food);
                 getAll(resp);
                 System.out.println("图片" + image);
+                break;
+            }
+            case "getRecommend":{
+                List<Food> foodList=FoodDao.getRecommend();
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(foodList));
+                out.close();
                 break;
             }
             case "addRecommend": {

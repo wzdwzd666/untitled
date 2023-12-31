@@ -21,7 +21,6 @@
     <tr>
         <th>ID</th>
         <th>用户ID</th>
-        <th>标题</th>
         <th>发表时间</th>
         <th>内容</th>
         <th>图片</th>
@@ -73,18 +72,17 @@
             row.id = review.id
             row.insertCell(0).textContent = review.id
             row.insertCell(1).textContent = review.user.name
-            row.insertCell(2).textContent = review.title
-            row.insertCell(3).textContent = review.time;
-            row.insertCell(4).textContent = review.content
+            row.insertCell(2).textContent = review.time;
+            row.insertCell(3).textContent = review.content
             // 插入图片
             if(review.image === undefined){
-                row.insertCell(5).textContent = "无"
+                row.insertCell(4).textContent = "无"
             }else {
                 console.log(review.image)
-                row.insertCell(5).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px'>"
+                row.insertCell(4).innerHTML = "<img src='" + review.image + "' alt='Review Image' style='max-width: 100px'>"
             }
-            row.insertCell(6).textContent = review.like
-            row.insertCell(7).innerHTML = "<button onclick=\"deleteTopic('"+review.id+"')\">删除</button>"
+            row.insertCell(5).textContent = review.like
+            row.insertCell(6).innerHTML = "<button onclick=\"deleteTopic('"+review.id+"')\">删除</button>"
         });
     }
     // 删除话题

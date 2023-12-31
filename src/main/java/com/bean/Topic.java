@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class Topic implements Serializable {
     private String id;
     private User user;
-    private String title;
     private String time;
     private String content;
     private String image;
@@ -16,10 +15,9 @@ public class Topic implements Serializable {
         // 默认构造方法
     }
 
-    public Topic(String id, User user, String title, String time, String content, String image, int like) {
+    public Topic(String id, User user, String time, String content, String image, int like) {
         this.id=id;
         this.user=user;
-        this.title=title;
         this.time=time;
         this.content=content;
         this.image=image;
@@ -41,14 +39,6 @@ public class Topic implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getTime() {
@@ -81,5 +71,16 @@ public class Topic implements Serializable {
 
     public void setLike(int like) {
         this.like = like;
+    }
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "id='" + id + '\'' +
+                ", user=" + user +
+                ", time='" + time + '\'' +
+                ", content='" + content + '\'' +
+                ", image='" + image + '\'' +
+                ", like=" + like +
+                '}';
     }
 }

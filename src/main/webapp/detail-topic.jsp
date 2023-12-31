@@ -1,86 +1,225 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>帖子详细页面</title>
-  <link rel="stylesheet" href="assets/css/home.css">
-  <link rel="stylesheet" href="assets/css/manage.css">
-  <style>
-    body{
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帖子内容</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        section {
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        .post {
+            border: 1px solid #888;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .post-content {
+            margin-bottom: 10px;
+        }
+
+        .comments {
+            margin-top: 10px;
+        }
+
+        .comment {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .commenter {
+            cursor: pointer;
+        }
+        .like-count {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 8px;
+            margin: 5px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: green;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .timestamp {
+            color: #888;
+        }
+        .content{
+            background: #f4f4f4;
+            margin: 20px;
+            min-height: 300px;
+        }
+    </style>
 </head>
 <body>
-    <h2>标题:<span id="title"></span></h2>
-    <h1 style="visibility: hidden;">帖子:<span id="topicId">${param.topicId}</span></h1>
-    <h2>用户:
-      <c:forEach var="user" items="${userList}">
-        <c:if test="user.id==param.userId">
-          ${user.name}
-        </c:if>
-      </c:forEach></h2>
-    <p>时间:<span id="time"></span></p>
-    <img alt="topicImage" src="" id="image" style="width: 600px">
-    <h2>内容</h2>
-    <p id="content"> </p>
-    <label for="replyContent"></label>
-    <input type="text" id="replyContent">
-    <input type="submit" onclick="topicEvaluate()" value="发表评价">
-    <div class="actions">
-      <button id="likeButton">点赞</button>
-      <div>点赞数:<span id="likeCount"></span></div>
+
+<header>
+    <h1>帖子内容</h1>
+    <!-- 返回按钮 -->
+    <button onclick="history.back()">返回</button>
+</header>
+
+<section id="post-container">
+    <!-- 帖子内容 -->
+    <div class="post" id="post-1">
+        <h2><span id="user"></span></h2>
+        <div id="time" class="timestamp"></div>
+        <div id="content" class="content">
+            <p class="post-content">帖子正文内容...</p>
+            <img alt="帖子图片" id="image" src="">
+        </div>
+        <!-- 点赞区域 -->
+        <div class="like-count">点赞数：<span id="like-count">0</span></div>
+        <button class="like-button" id="like-button" onclick="addLike()">点赞</button>
     </div>
-    <div>
-      <c:forEach var="topicEvaluate" items="${topicEvaluateList}">
-        <c:if test="${topicEvaluate.userId==param.userId and topicEvaluate.topicId==param.topicId}">
-          <h2>用户:
-            <c:forEach var="user" items="${userList}">
-              <c:if test="user.id==topicEvaluate.userId">
-                ${user.name}
-              </c:if>
-            </c:forEach></h2>
-          <p>时间：${topicEvaluate.time}</p>
-          <p>内容：${topicEvaluate.content}</p>
-        </c:if>
-      </c:forEach>
+    <h2>评论</h2>
+    <div class="upload-btn-wrapper">
+        <input type="text" name="evaluate" id="evaluate" />
+        <button onclick="postComment(${param.topicId})">发表评论</button>
     </div>
-</body>
+    <!-- 评论区 -->
+    <div class="comments" id="comments">
+        <!-- 评论区内容 -->
+        <div class="comment" id="comment">
+            <div id="user-info"><strong ><span id="commenter" class="commenter">评论者1</span>:</strong> <span id="comment-content">这是一个很好的帖子！</span></div>
+            <div class="timestamp" id="timestamp"></div>
+        </div>
+    </div>
+</section>
+
 <script>
-  const topicId=document.getElementById('topicId').textContent
-  window.onload=getTopic
-  function fetchData(url, options) {
-    return fetch(url, options)
+    window.onload=function getData(){
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('topicId');
+        console.log(id);
+        getTopic(id);
+        getComment(id);
+    }
+    function fetchData(url, options) {
+        return fetch(url, options)
             .then(response => response.json())
             .catch(error => console.error('Error:', error));
-  }
-  function getTopic(){
-    console.log(topicId)
-    const postOptions = {
-      method: 'POST', // 设置请求方法为 POST
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        type: 'getTopic',
-        id: topicId,
-      }),
-    };
-    fetchData('TopicServlet', postOptions)
-        .then(data => renderReview(data));
-  }
-  function renderReview(topic) {
-    console.log(topic)
-    document.getElementById('title').textContent=topic.title
-    document.getElementById('time').textContent=topic.time
-    document.getElementById('image').src=topic.image
-    document.getElementById('content').textContent=topic.content
-    document.getElementById('likeCount').textContent=topic.like
-  }
-  function topicEvaluate(){
+    }
+    function getTopic(id) {
+        console.log("获取帖子")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'getTopic',
+                id: id,
+            }),
+        };
+        fetchData('TopicServlet', postOptions)
+            .then(data => renderTopic(data));
+    }
+    function renderTopic(topic) {
+        console.log("渲染帖子", topic)
+        document.getElementById('user').textContent = topic.user.name
+        document.getElementById('time').textContent = topic.time
+        document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + topic.image + ">"
+        document.getElementById('like-count').textContent = topic.like
+    }
+    function getComment(id) {
+        console.log("获取评论")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'getById',
+                topicId: id,
+            }),
+        };
+        fetchData('TopicEvaluateServlet', postOptions)
+            .then(data => renderComment(data));
+    }
+    function renderComment(list) {
+        console.log("渲染评论", list)
+        const postsContainer = document.getElementById('comments');
+        // 清空容器
+        postsContainer.innerHTML = "";
 
-  }
+        list.forEach(postData => {
+            const postElement = document.createElement("div");
+            postElement.classList.add("comment");
+            postElement.id=postData.id
+
+
+            const userElement = document.createElement("div");
+            userElement.classList.add("user-info");
+            userElement.innerHTML = "<strong><span class=\"commenter\" id=\"commenter\">" + postData.user.name + "</span>:</strong> <span id=\"comment-content\">" + postData.content + "</span>";
+            postElement.appendChild(userElement);
+            const commenterElement = userElement.querySelector("#commenter");
+            commenterElement.addEventListener('click', function () {
+                window.location = 'detail-user.jsp?topicId = '+postData.user.id;
+            });
+
+            const timeElement = document.createElement("div");
+            timeElement.classList.add("timestamp");
+            timeElement.textContent = postData.time
+
+            postElement.appendChild(timeElement)
+            postsContainer.appendChild(postElement);
+        });
+    }
+    function postComment(topicId) {
+        console.log("发表评论")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'postComment',
+                topicId: topicId,
+                content: document.getElementById('evaluate').value
+            }),
+        };
+        fetchData('TopicEvaluateServlet', postOptions)
+            .then(data => {
+                document.getElementById('evaluate').value = ""
+                renderComment(data)
+            });
+    }
 </script>
+
+</body>
 </html>

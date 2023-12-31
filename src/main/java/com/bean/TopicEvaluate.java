@@ -5,16 +5,16 @@ import java.io.Serializable;
 public class TopicEvaluate implements Serializable {
     private String id;
     private String topicId;
-    private String userId;
+    private User user;
     private String time;
     private String content;
     public TopicEvaluate(){
 
     }
-    public TopicEvaluate(String id, String topicId, String userId, String time,String content){
+    public TopicEvaluate(String id, String topicId, User user, String time,String content){
         this.id=id;
         this.topicId=topicId;
-        this.userId=userId;
+        this.user=user;
         this.time=time;
         this.content=content;
     }
@@ -35,12 +35,12 @@ public class TopicEvaluate implements Serializable {
         return topicId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public void setTime(String time) {

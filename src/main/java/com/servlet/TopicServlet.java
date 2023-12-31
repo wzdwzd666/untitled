@@ -1,6 +1,7 @@
 package com.servlet;
 
 import com.bean.Topic;
+import com.bean.User;
 import com.dao.TopicDao;
 import com.dao.UserDao;
 import com.google.gson.Gson;
@@ -43,18 +44,35 @@ public class TopicServlet extends HttpServlet {
                 out.println(gson.toJson(topicList));
                 out.close();
             }
-            case "like": {
-//                String id = req.getParameter("id");
-//                String like = req.getParameter("like");
-//                int likeCount = Integer.parseInt(like + 1);
-//                TopicDao.addLike(id, String.valueOf(likeCount));
-//                String sql = "SELECT * FROM topic";
-//                List<Topic> topicList = TopicDao.findTopic(sql);
-//                PrintWriter out = resp.getWriter();
-//                resp.setContentType("text/plain;charset=UTF-8");
-//                out.println(gson.toJson(topicList));
-//                out.close();
-//                break;
+            case "addLike": {
+                String id = req.getParameter("id");
+                User user= (User) req.getSession().getAttribute("user");
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                if(TopicDao.checkLike(id,user.getId())){
+                    out.write("{\"message\": \"点赞过了\"}");
+                }else {
+                    TopicDao.addLike(id,user.getId());
+                    String like=TopicDao.getLike(id);
+                    out.write("{\"message\": \""+like+"\"}");
+                }
+                out.close();
+                break;
+            }
+            case "cancelLike": {
+                String id = req.getParameter("id");
+                User user= (User) req.getSession().getAttribute("user");
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                if(TopicDao.checkLike(id,user.getId())){
+                    TopicDao.cancelLike(id,user.getId());
+                    String like=TopicDao.getLike(id);
+                    out.write("{\"message\": \""+like+"\"}");
+                }else {
+                    out.write("{\"message\": \"还没点赞\"}");
+                }
+                out.close();
+                break;
             }
             case "getTopic": {
                 Gson gson=new Gson();
@@ -72,6 +90,7 @@ public class TopicServlet extends HttpServlet {
         Gson gson=new Gson();
         PrintWriter out=resp.getWriter();
         List<Topic> topicList= TopicDao.findAllTopic();
+        System.out.println(topicList);
         resp.setContentType("text/plain;charset=UTF-8");
         out.println(gson.toJson(topicList));
         out.close();

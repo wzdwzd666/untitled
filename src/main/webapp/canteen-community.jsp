@@ -45,16 +45,19 @@
       border: 1px solid #888;
       padding: 10px;
       margin: 10px;
-      width: 600px;
+      width: 500px;
       min-height: 300px;
       background: #fff;
       position: relative;
     }
-
     .post-content{
       background: #f4f4f4;
-      margin: 10px;
-      height: 200px;
+      margin: 20px;
+      min-height: 300px;
+    }
+    .post-image {
+      display: block;
+      margin: 0 auto;
     }
 
     .post-actions {
@@ -70,37 +73,6 @@
     section {
       margin: 15px;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.8);
-    }
-
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .close:hover {
-      color: black;
-    }
     button.search-button {
       background-color: #4CAF50; /* Green background */
       color: white;
@@ -115,7 +87,7 @@
     }
 
     /* Style for the View Details button */
-    button.view-details-button {
+    button.view-button {
       background-color: #008CBA; /* Blue background */
       color: white;
       border: none;
@@ -126,8 +98,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    /* Style for the modal close button */
     .close {
       background-color: #f44336; /* Red background */
       color: white;
@@ -141,73 +111,140 @@
       background-color: #d32f2f; /* Darker red background on hover */
       color: white;
     }
+    input[type="text"] {
+      /*width: 60%;*/
+      padding: 8px;
+      margin: 5px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
 <header>
   <h1>交流社区</h1>
   <div class="search-bar">
+    <button class="search-button" onclick="history.back()">返回</button>
     <input type="text" placeholder="Search...">
     <button class="search-button">搜索</button>
-    <button class="search-button" onclick="sortByPopularity()">热度排序</button>
-    <button class="search-button" onclick="sortByTime()">时间排序</button>
+    <button class="search-button" onclick="">热度排序</button>
+    <button class="search-button" onclick="">时间排序</button>
     </div>
   </div>
 </header>
 
 <section id="posts">
-  <div class="post">
-    <div class="user-info">
-      <h2><span class="user">John Doe</span></h2>
-      <span class="timestamp">2 hours ago</span>
-      <p id="title"></p>
-    </div>
-    <div class="post-content">
-      <p>This is a sample post content. Lorem ipsum dolor sit amet...</p>
-    </div>
-    <div class="post-actions">
-      <button class="view-details-button" onclick="showPostDetails(1)">查看</button>
-      <button class="view-details-button" onclick="showPostDetails(1)">评论</button>
-      <button class="view-details-button" onclick="showPostDetails(1)">点赞</button>
-    </div>
-  </div>
 </section>
-
-<div id="post-details-modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closePostDetailsModal">&times;</span>
-    <h2>Post Details</h2>
-    <div id="post-details-content">
-      <!-- Post details will be loaded here using JavaScript -->
-    </div>
-  </div>
-</div>
 </body>
 <script>
-  // JavaScript functions for interacting with the page
-  function showPostDetails(postId) {
-    // Simulated data for post details
-    const postDetails = {
-      id: postId,
-      content: "This is a detailed post content. Lorem ipsum dolor sit amet...",
-      timestamp: "2 hours ago",
-      // Add more details as needed
-    };
-
-    // Populate post details in the modal
-    document.getElementById('post-details-content').innerHTML = `
-        <p>${postDetails.content}</p>
-        <p><strong>Timestamp:</strong> ${postDetails.timestamp}</p>
-        <!-- Add more details... -->
-    `;
-
-    // Show the modal
-    document.getElementById('post-details-modal').style.display = 'block';
+  window.onload = function() {
+    getTopic();
+    // getRecommend();
+  };
+  function fetchData(url, options) {
+    return fetch(url, options)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
   }
+  function getTopic() {
+    console.log("获取帖子")
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'getAll',
+      }),
+    };
+    fetchData('TopicServlet', postOptions)
+            .then(data => renderTopic(data));
+  }
+  function renderTopic(list) {
+    console.log("渲染", list)
+    const postsContainer = document.getElementById('posts');
+    // 清空容器
+    postsContainer.innerHTML = "";
 
-  function closePostDetailsModal() {
-    // Close the modal
-    document.getElementById('post-details-modal').style.display = 'none';
+    list.forEach(postData => {
+      const postElement = document.createElement("div");
+      postElement.classList.add("post");
+      postElement.id=postData.id
+
+      const userElement = document.createElement("div");
+      userElement.classList.add("user-info");
+      userElement.innerHTML = "<h2><span class='user'>"+postData.user.name+"</span></h2>"+
+              "<span class='timestamp'>"+postData.time+"</span>";
+      userElement.id = postData.user.id
+      postElement.appendChild(userElement);
+
+      const contentElement = document.createElement("div");
+      contentElement.classList.add("post-content");
+      contentElement.innerHTML = "<p>" + postData.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + postData.image + ">";
+      postElement.appendChild(contentElement);
+
+      const actionsElement = document.createElement("div");
+      actionsElement.classList.add("post-actions");
+      actionsElement.innerHTML =
+              " <button class='view-button' onclick=\"showDetail('" + postData.id + "')\">查看</button>" +
+              "<button class='view-button' onclick=\"addLike('" + postData.id + "')\" id='like-button-" + postData.id + "'>点赞" + postData.like + "</button>" +
+              "<button class='view-button' onclick=\"cancelLike('" + postData.id + "')\">取消点赞</button>";
+      postElement.appendChild(actionsElement);
+
+      postsContainer.appendChild(postElement);
+    });
+  }
+  function showDetail(id){
+    window.location='detail-topic.jsp?topicId='+id
+  }
+  function addLike(id) {
+    console.log("点赞")
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'addLike',
+        id: id,
+      }),
+    };
+    fetchData('TopicServlet', postOptions)
+            .then(data => {
+              console.log(data.message)
+              if (data.message=='点赞过了') {
+                alert(data.message)
+              } else {
+                document.getElementById('like-button-' + id).innerText = "点赞" + data.message;
+                alert("点赞成功")
+              }
+            });
+  }
+  function cancelLike(id) {
+    console.log("取消点赞")
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'cancelLike',
+        id: id,
+      }),
+    };
+    fetchData('TopicServlet', postOptions)
+            .then(data => {
+              console.log(data)
+              if(data.message=='还没点赞'){
+                  console.log("取消")
+                  alert(data.message)
+              }else {
+                console.log("成功")
+                document.getElementById('like-button-' + id).innerText = "点赞" + data.message;
+                alert("取消点赞成功")
+              }
+            });
   }
 
 </script>

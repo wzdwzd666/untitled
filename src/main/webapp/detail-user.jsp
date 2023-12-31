@@ -2,89 +2,150 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <title>用户信息</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        section {
+            margin: 20px auto;
+            width: 600px;
+        }
+
+        .user-info {
+            border: 1px solid #888;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post {
+            border: 1px solid #888;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .post-content {
+            margin-bottom: 10px;
+        }
+
+        .return-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>${user.type}:${user.name}</h2>
+<header>
+    <h1>User Home</h1>
+</header>
 
-  <form id="adminForm">
+<section>
+    <!-- 用户信息 -->
+    <div class="user-info">
+        <h2><span id="account"></span></h2>
+        <div id="name"></div>
+        <div id="type"></div>
+    </div>
 
-    <label for="userAccount">用户账号:</label>
-    <input type="text" id="userAccount" name="userAccount" value="${user.account}" readonly>
+    <!-- 用户帖子 -->
+    <h2>用户帖子</h2>
+    <div id="post-container">
+        <!-- 帖子内容 -->
+        <div class="post" id="post-1">
+            <h2><span id="user"></span></h2>
+            <div id="time" class="timestamp"></div>
+            <div id="content">
+                <p class="post-content">帖子正文内容...</p>
+                <img alt="帖子图片" id="image" src="">
+            </div>
+        </div>
+    </div>
 
-    <label for="userName">用户姓名:</label>
-    <input type="text" id="userName" name="userName" value="${user.name}" readonly>
+    <!-- 返回按钮 -->
+    <button class="return-button" onclick="history.back()">返回</button>
+</section>
 
-    <label for="userPassword">登录密码:</label>
-    <input type="text" id="userPassword" name="userPassword" value="${user.password}" readonly>
-
-    <label for="type">用户类型: ${user.type}</label>
-    <select id="type" name="type" class="custom-select" disabled>
-      <option value="${user.type}" selected>${user.type}</option>
-      <c:if test="${user.type=='学生'}">
-        <option value="老师">老师</option>
-      </c:if>
-      <c:if test="${user.type=='老师'}">
-        <option value="学生">学生</option>
-      </c:if>
-    </select>
-
-    <button type="button" onclick="toggleEdit()">编辑</button>
-    <button type="button" onclick="saveChanges()">保存</button>
-  </form>
-</div>
-</body>
 <script>
-  let isEditing = false; // 初始状态为不可编辑
-
-  function toggleEdit() {
-    if(isEditing===false) {
-      console.log("进入编辑")
-      document.getElementById('type').removeAttribute('disabled')
-    }else {
-      console.log("退出编辑")
-      document.getElementById('type').setAttribute('disabled', 'disabled')
+    // 使用 JavaScript 从后端获取用户信息和帖子数据
+    window.onload = function () {
+        getUserInfo();
+        getUserPosts();
     }
-    isEditing = !isEditing; // 切换编辑状态
-    document.getElementById('userName').readOnly = !isEditing
-    document.getElementById('userPassword').readOnly = !isEditing
-  }
 
-  function saveChanges() {
-    console.log("保存")
-    if (!isEditing) {
-      // 如果是不可编辑状态
-      alert("请先点击编辑按钮进行修改！");
-      return;
+    // 获取用户信息
+    function getUserInfo() {
+        // 使用 fetch 或者其他 Ajax 技术从后端获取用户信息，这里只是一个示例
+        const userId = "<%= request.getParameter("userId") %>"; // 获取页面传递的用户 ID
+        const userInfo = { // 替换成实际的用户信息
+            account: "user123",
+            name: "John Doe",
+            type: "Regular User"
+        };
+
+        // 将用户信息显示在页面上
+        document.getElementById('account').textContent = "Account: " + userInfo.account;
+        document.getElementById('name').textContent = "Name: " + userInfo.name;
+        document.getElementById('type').textContent = "Type: " + userInfo.type;
     }
-    const form = document.getElementById('adminForm')
-    const postOptions = {
-      method: 'POST', // 设置请求方法为 POST
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        type: 'edit',
-        name: form.elements["userName"].value,
-        password: form.elements["userPassword"].value,
-        userType: form.elements["type"].value,
-      }),
-    };
-    fetch("UserServlet", postOptions)
-            .then(()=> {
-              // 切换回不可编辑状态
-              toggleEdit()
-              console.log("编辑成功")
-              alert("编辑成功")
-            })
-            .catch(error => {
-              console.error("fetch 操作出现问题:", error);
-            });
-  }
+
+    // 获取用户帖子
+    function getUserPosts() {
+        // 使用 fetch 或者其他 Ajax 技术从后端获取用户帖子数据，这里只是一个示例
+        const userId = "<%= request.getParameter("userId") %>"; // 获取页面传递的用户 ID
+        const userPosts = [
+            {
+                id: 1,
+                user: { name: "John Doe" },
+                time: "2023-01-01 12:00",
+                content: "This is a user post.",
+                image: "path/to/image.jpg"
+            },
+            // 可能有更多的帖子
+        ];
+
+        // 将用户帖子显示在页面上
+        const postContainer = document.getElementById('post-container');
+        userPosts.forEach(post => {
+            const postElement = document.createElement("div");
+            postElement.classList.add("post");
+            postElement.id = "post-" + post.id;
+
+            // 设置帖子内容，类似于之前的例子
+            // ...
+
+            postContainer.appendChild(postElement);
+        });
+    }
 </script>
+
+</body>
 </html>
+

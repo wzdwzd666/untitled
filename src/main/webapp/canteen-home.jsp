@@ -96,10 +96,10 @@
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-          type: 'getList',
+          type: 'getRecommend',
         }),
       };
-      fetchData('RecommendServlet', postOptions)
+      fetchData('FoodServlet', postOptions)
               .then(data => renderRecommend(data));
     }
     function renderRecommend(list) {
@@ -112,16 +112,16 @@
         element.classList.add("recommend");
 
         const canteenElement = document.createElement("h2");
-        canteenElement.textContent = "食堂："+data.canteenName;
+        canteenElement.textContent = "食堂："+data.canteen.name;
 
         const foodElement = document.createElement("h4");
-        foodElement.textContent = "菜品:"+data.food.name+" 菜系:"+data.food.cuisine+" 价格:"+data.food.price;
+        foodElement.textContent = "菜品:"+data.name+" 菜系:"+data.cuisine+" 价格:"+data.price;
 
         const timeElement = document.createElement("p");
         timeElement.textContent = "时间："+data.time;
 
         const imageElement = document.createElement("p");
-        imageElement.innerHTML = "<img alt='图片' style='width: 300px;' src="+data.food.image+">";
+        imageElement.innerHTML = "<img alt='图片' style='width: 300px;' src="+data.image+">";
 
         element.appendChild(canteenElement);
         element.appendChild(foodElement)

@@ -23,20 +23,31 @@ public class TopicDao {
             return null;
         }
         try {
-            String sql="SELECT topic.*, user.name FROM topic\n" +
-                    "JOIN user ON user.user_id = topic.user_id";
+//            String sql="SELECT topic.*, user.name FROM topic\n" +
+//                    "JOIN user ON user.user_id = topic.user_id";
+            String sql="SELECT\n" +
+                    "    topic.*,\n" +
+                    "    user.name,\n" +
+                    "    COUNT(like_info.topic_id) AS like_count\n" +
+                    "FROM\n" +
+                    "    topic\n" +
+                    "JOIN\n" +
+                    "    user ON user.user_id = topic.user_id\n" +
+                    "LEFT JOIN\n" +
+                    "    like_info ON like_info.topic_id = topic.topic_id\n" +
+                    "GROUP BY\n" +
+                    "    topic.topic_id;";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
                 String id=rs.getString("topic_id");
                 User user =new User();
                 user.setName(rs.getString("name"));
-                String title=rs.getString("title");
                 String time=rs.getString("time");
                 String content=rs.getString("content");
                 String image=rs.getString("image");
                 int like=rs.getInt("like_count");
-                topicList.add(new Topic(id,user,title,time,content,image,like));
+                topicList.add(new Topic(id,user,time,content,image,like));
             }
             rs.close();
             statement.close();
@@ -63,12 +74,11 @@ public class TopicDao {
                 String id=rs.getString("topic_id");
                 User user =new User();
                 user.setName(rs.getString("name"));
-                String title=rs.getString("title");
                 String time=rs.getString("time");
                 String content=rs.getString("content");
                 String image=rs.getString("image");
                 int like=rs.getInt("like_count");
-                topicList.add(new Topic(id,user,title,time,content,image,like));
+                topicList.add(new Topic(id,user,time,content,image,like));
             }
             rs.close();
             statement.close();
@@ -78,38 +88,47 @@ public class TopicDao {
             throw new RuntimeException(e);
         }
     }
-    public static Topic getTopicById(String id){
-//        Topic topic = null;
-//        Connection connection= MyConnection.getConnection();
-//        if(connection==null){
-//            return null;
-//        }
-//        try {
-//            String sql="SELECT topic.*, user.name FROM topic\n" +
-//                    "JOIN user ON user.user_id = topic.user_id\n"+
-//                    "WHERE topic_id = ?";
-//            PreparedStatement statement = connection.prepareStatement(sql);
-//            statement.setInt(1, Integer.parseInt(id));
-//            ResultSet rs=statement.executeQuery();
-//            while (rs.next()){
-//                String topic_id=rs.getString("topic_id");
-//                User user =new User();
-//                user.setName(rs.getString("name"));
-//                String title=rs.getString("title");
-//                String time=rs.getString("time");
-//                String content=rs.getString("content");
-//                String image=rs.getString("image");
-//                int like=rs.getInt("like_count");
-//                topic=new Topic(topic_id,user,title,time,content,image,like);
-//            }
-//            rs.close();
-//            statement.close();
-//            connection.close();
-//            return topic;
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+    public static Topic getTopicById(String topicId){
+        Topic topic=new Topic();
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT\n" +
+                    "    topic.*,\n" +
+                    "    user.name,\n" +
+                    "    COUNT(like_info.topic_id) AS like_count\n" +
+                    "FROM\n" +
+                    "    topic\n" +
+                    "JOIN\n" +
+                    "    user ON user.user_id = topic.user_id\n" +
+                    "LEFT JOIN\n" +
+                    "    like_info ON like_info.topic_id = topic.topic_id\n" +
+                    "WHERE\n"+
+                    "topic.topic_id = ?\n"+
+                    "GROUP BY\n" +
+                    "    topic.topic_id;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,topicId);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString("topic_id");
+                User user =new User();
+                user.setName(rs.getString("name"));
+                String time=rs.getString("time");
+                String content=rs.getString("content");
+                String image=rs.getString("image");
+                int like=rs.getInt("like_count");
+                topic=new Topic(id,user,time,content,image,like);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return topic;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     public static void deleteTopic(String id){
         Connection connection= MyConnection.getConnection();
@@ -127,19 +146,76 @@ public class TopicDao {
             throw new RuntimeException(e);
         }
     }
-    public static void addLike(String id,String like){
+    public static void addLike(String id,String userId){
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return;
         }
         try {
-            String sql="UPDATE topic SET like_count = ? WHERE topic_id=?";
+            String sql="INSERT INTO like_info(topic_id,user_id) VALUES(?,?)";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,like);
-            statement.setString(2,id);
+            statement.setString(1,id);
+            statement.setString(2,userId);
             statement.execute();
             statement.close();
             connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void cancelLike(String id,String userId){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="DELETE FROM like_info WHERE topic_id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,id);
+            statement.setString(2,userId);
+            statement.execute();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static boolean checkLike(String id,String userId){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return false;
+        }
+        try {
+            String sql="SELECT * FROM like_info WHERE topic_id = ? AND user_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,id);
+            statement.setString(2,userId);
+            ResultSet rs=statement.executeQuery();
+            boolean b = rs.next();
+            statement.close();
+            connection.close();
+            return b;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static String getLike(String id){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT COUNT(like_info.topic_id) AS like_count FROM like_info WHERE topic_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,id);
+            ResultSet rs=statement.executeQuery();
+            String like = null;
+            while (rs.next()){
+                like=rs.getString("like_count");
+            }
+            statement.close();
+            connection.close();
+            return like;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

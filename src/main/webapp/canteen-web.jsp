@@ -65,6 +65,7 @@
       width: 100%;
       height: 100%;
       border: none;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -75,10 +76,10 @@
 
 <nav>
   <a href="canteen-home.jsp" target="frame">首页</a>
-  <a href="canteen-community.jsp" target="frame">交流社区</a>
+  <a href="canteen-community.jsp">交流社区</a>
   <a href="#" target="frame">投诉回复</a>
   <a href="#" target="frame">评论点赞</a>
-  <a href="detail-user.jsp" target="frame">我的信息</a>
+  <a href="detail-my.jsp" target="frame">我的信息</a>
   <a href="index.jsp">退出登录</a>
 </nav>
 
