@@ -205,7 +205,7 @@ public class TopicDao {
                     "    topic.topic_id\n" +
                     "ORDER BY\n" +
                     "    like_count DESC\n" +
-                    "LIMIT 3;\n";
+                    "LIMIT 4;\n";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
@@ -317,18 +317,30 @@ public class TopicDao {
             throw new RuntimeException(e);
         }
     }
-    public static void insertTopic(String userId,String time,String content,String image){
-        Connection connection= MyConnection.getConnection();
-        if(connection==null){
+    public static void insertTopic(String userId, String time, String content, String image) {
+        Connection connection = MyConnection.getConnection();
+        if (connection == null) {
             return;
         }
         try {
-            String sql="INSERT INTO topic(user_id,time,content,image) VALUES (?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,userId);
-            statement.setString(2,time);
-            statement.setString(3,content);
-            statement.setString(4,image);
+            PreparedStatement statement;
+            System.out.println("图片是不是null"+image);
+            if(image.trim().equals("null")){
+                System.out.println("执行null");
+                String sql = "INSERT INTO topic(user_id, time, content) VALUES (?, ?, ?)";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, userId);
+                statement.setString(2, time);
+                statement.setString(3, content);
+            }else {
+                System.out.println("执行非null");
+                String sql = "INSERT INTO topic(user_id, time, content, image) VALUES (?, ?, ?, ?)";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, userId);
+                statement.setString(2, time);
+                statement.setString(3, content);
+                statement.setString(4, image);
+            }
             statement.execute();
             statement.close();
             connection.close();
@@ -336,4 +348,5 @@ public class TopicDao {
             throw new RuntimeException(e);
         }
     }
+
 }

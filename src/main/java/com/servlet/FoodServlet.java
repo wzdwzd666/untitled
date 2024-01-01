@@ -40,6 +40,15 @@ public class FoodServlet extends HttpServlet {
                 getAll(resp);
                 break;
             }
+            case "getByCanteen":{
+                String canteenId=req.getParameter("canteenId");
+                List<Food> foodList=FoodDao.getByCanteen(canteenId);
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(foodList));
+                out.close();
+                break;
+            }
             case "delete": {
                 String id=req.getParameter("id");
                 FoodDao.deleteFood(id);

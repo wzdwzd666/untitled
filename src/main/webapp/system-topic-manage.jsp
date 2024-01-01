@@ -75,7 +75,7 @@
             row.insertCell(2).textContent = review.time;
             row.insertCell(3).textContent = review.content
             // 插入图片
-            if(review.image == null){
+            if(review.image == undefined){
                 row.insertCell(4).textContent = "无"
             }else {
                 console.log(review.image)

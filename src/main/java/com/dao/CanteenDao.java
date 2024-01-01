@@ -60,6 +60,129 @@ public class CanteenDao {
             throw new RuntimeException(e);
         }
     }
+    public static Canteen getCanteen(String canteenId,String userId){
+        Canteen canteen=null;
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT\n" +
+                    "    canteen.*,\n" +
+                    "    avg_rating.average_rating,\n" +
+                    "    user_rating.user_rating\n" +
+                    "FROM\n" +
+                    "    canteen\n" +
+                    "LEFT JOIN (\n" +
+                    "    SELECT\n" +
+                    "        canteen_id,\n" +
+                    "        AVG(rating) AS average_rating\n" +
+                    "    FROM\n" +
+                    "        canteen_evaluate\n" +
+                    "    GROUP BY\n" +
+                    "        canteen_id\n" +
+                    ") AS avg_rating ON canteen.canteen_id = avg_rating.canteen_id\n" +
+                    "LEFT JOIN (\n" +
+                    "    SELECT\n" +
+                    "        canteen_id,\n" +
+                    "        rating AS user_rating\n" +
+                    "    FROM\n" +
+                    "        canteen_evaluate\n" +
+                    "    WHERE\n" +
+                    "        user_id = ?\n" +
+                    ") AS user_rating ON canteen.canteen_id = user_rating.canteen_id\n" +
+                    "WHERE\n" +
+                    "    canteen.canteen_id = ?  -- 添加特定 canteen_id 的条件\n" +
+                    "ORDER BY\n" +
+                    "    avg_rating.average_rating DESC;\n";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,userId);
+            statement.setString(2,canteenId);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString("canteen_id");
+                String name=rs.getString("name");
+                String starTime=rs.getString("start_time");
+                String endTime=rs.getString("end_time");
+                String info=rs.getString("info");
+                String averageRating=rs.getString("average_rating");
+                if(averageRating==null){
+                    averageRating="暂无数据";
+                }
+                String userRating=rs.getString("user_rating");
+                if(userRating==null){
+                    userRating="还没评分";
+                }
+                canteen=new Canteen(id,name,starTime,endTime,info,averageRating,userRating);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return canteen;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static List<Canteen> getPopularCanteen(String userId){
+        List<Canteen> canteenList=new ArrayList<>();
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT\n" +
+                    "    canteen.*,\n" +
+                    "    avg_rating.average_rating,\n" +
+                    "    user_rating.user_rating\n" +
+                    "FROM\n" +
+                    "    canteen\n" +
+                    "LEFT JOIN (\n" +
+                    "    SELECT\n" +
+                    "        canteen_id,\n" +
+                    "        AVG(rating) AS average_rating\n" +
+                    "    FROM\n" +
+                    "        canteen_evaluate\n" +
+                    "    GROUP BY\n" +
+                    "        canteen_id\n" +
+                    ") AS avg_rating ON canteen.canteen_id = avg_rating.canteen_id\n" +
+                    "LEFT JOIN (\n" +
+                    "    SELECT\n" +
+                    "        canteen_id,\n" +
+                    "        rating AS user_rating\n" +
+                    "    FROM\n" +
+                    "        canteen_evaluate\n" +
+                    "    WHERE\n" +
+                    "        user_id = ?\n" +
+                    ") AS user_rating ON canteen.canteen_id = user_rating.canteen_id\n" +
+                    "ORDER BY\n" +
+                    "    avg_rating.average_rating DESC;\n";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,userId);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString("canteen_id");
+                String name=rs.getString("name");
+                String starTime=rs.getString("start_time");
+                String endTime=rs.getString("end_time");
+                String info=rs.getString("info");
+                String averageRating=rs.getString("average_rating");
+                if(averageRating==null){
+                    averageRating="暂无数据";
+                }
+                String userRating=rs.getString("user_rating");
+                if(userRating==null){
+                    userRating="还没评分";
+                }
+                canteenList.add(new Canteen(id,name,starTime,endTime,info,averageRating,userRating));
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return canteenList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void editCanteenById(Canteen canteen) {
         Connection connection= MyConnection.getConnection();
         if(connection==null){

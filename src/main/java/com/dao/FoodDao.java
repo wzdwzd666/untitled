@@ -42,6 +42,40 @@ public class FoodDao {
             throw new RuntimeException(e);
         }
     }
+    public static List<Food> getByCanteen(String canteenId) {
+        List<Food> foodList = new ArrayList<>();
+        Connection connection = MyConnection.getConnection();
+        if (connection == null) {
+            return null;
+        }
+        try {
+            String sql = "SELECT food.*, canteen.name AS canteen_name FROM food\n" +
+                    "LEFT JOIN canteen ON canteen.canteen_id = food.canteen_id\n" +
+                    "WHERE canteen.canteen_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, canteenId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("food_id");
+                String name = rs.getString("name");
+                Canteen canteen = new Canteen();
+                canteen.setName(rs.getString("canteen_name"));
+                String cuisine = rs.getString("cuisine");
+                String image = rs.getString("image");
+                String price = rs.getString("price");
+                String recommend = rs.getString("recommend");
+                String time = rs.getString("time");
+                foodList.add(new Food(id, name, canteen, cuisine, image, price, recommend, time));
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return foodList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<String> findAllCuisine(){
         List<String> cuisineList=new ArrayList<>();
         Connection connection= MyConnection.getConnection();

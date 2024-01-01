@@ -2,9 +2,11 @@ package com.servlet;
 
 import com.bean.Admin;
 import com.bean.Canteen;
+import com.bean.User;
 import com.dao.AdminDao;
 import com.dao.CanteenDao;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -44,6 +46,28 @@ public class CanteenServlet extends HttpServlet {
                 // 获取输出流
                 resp.setContentType("text/plain;charset=UTF-8");
                 out.println(gson.toJson(canteen1));
+                out.close();
+                break;
+            }
+            case "getDetailCanteen":{
+                String canteenId=req.getParameter("canteenId");
+                User user= (User) req.getSession().getAttribute("user");
+                Canteen canteen1=CanteenDao.getCanteen(canteenId,user.getId());
+                PrintWriter out=resp.getWriter();
+                // 获取输出流
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(canteen1));
+                out.close();
+                break;
+            }
+            case "getPopularCanteen":{
+                User user= (User) req.getSession().getAttribute("user");
+                List<Canteen> canteenList=CanteenDao.getPopularCanteen(user.getId());
+                System.out.println(canteenList);
+                PrintWriter out=resp.getWriter();
+                // 获取输出流
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(canteenList));
                 out.close();
                 break;
             }

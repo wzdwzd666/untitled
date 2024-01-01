@@ -29,14 +29,10 @@
             border: 1px solid #888;
             padding: 10px;
             margin-bottom: 20px;
+            height: 300px;
         }
         #user{
             cursor: pointer;
-        }
-        .post img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
         }
 
         .post-content {
@@ -82,13 +78,14 @@
         .content{
             background: #f4f4f4;
             margin: 20px;
+            /*min-height: 300px;*/
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>帖子内容</h1>
+    <h1>食堂评价</h1>
     <!-- 返回按钮 -->
     <button onclick="history.back()">返回</button>
 </header>
@@ -102,42 +99,41 @@
             <p class="post-content">帖子正文内容...</p>
             <img alt="帖子图片" id="image" src="">
         </div>
-        <!-- 点赞区域 -->
-        <div class="like-count">点赞数：<span id="like-count">0</span></div>
-        <button class="like-button" id="like-button" onclick="like()">点赞</button>
+        <p style='margin-top: 10px' id="avgRating">未评分</p>
+        <p style="margin-top: 10px" id="myRating"></p>
     </div>
     <h2>评论</h2>
     <div class="upload-btn-wrapper">
-        <input type="text" name="evaluate" id="evaluate" />
-        <button onclick="postComment(${param.topicId})">发表评论</button>
+        <label for="evaluate">评论内容:</label><input type="text" name="evaluate" id="evaluate" />
+        <div><label for="rating">评分:</label><input type="text" name="rating" id="rating"></div>
+        <button onclick="setRating()" id="setRating">发表评分</button>
     </div>
     <!-- 评论区 -->
     <div class="comments" id="comments">
         <!-- 评论区内容 -->
         <div class="comment" id="comment">
             <div id="user-info"><strong ><span id="commenter" class="commenter">评论者1</span>:</strong> <span id="comment-content">这是一个很好的帖子！</span></div>
-            <div class="timestamp" id="timestamp"></div>
+            <div class="timestamp" id="timestamp" style="margin-left: 20px"></div>
         </div>
     </div>
 </section>
 
 <script>
-    let topicId;
+    let canteenId;
     window.onload=function getData(){
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        topicId = urlParams.get('topicId');
-        console.log(topicId);
-        getTopic(topicId);
-        getComment(topicId);
-        getLike(topicId);
+        canteenId = urlParams.get('canteenId');
+        console.log(canteenId);
+        getCanteen(canteenId);
+        getEvaluate(canteenId);
     }
     function fetchData(url, options) {
         return fetch(url, options)
             .then(response => response.json())
             .catch(error => console.error('Error:', error));
     }
-    function getTopic(id) {
+    function getCanteen(id) {
         console.log("获取帖子")
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
@@ -145,39 +141,38 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                type: 'getTopic',
-                id: id,
+                type: 'getDetailCanteen',
+                canteenId: id,
             }),
         };
-        fetchData('TopicServlet', postOptions)
-            .then(data => renderTopic(data));
+        fetchData('CanteenServlet', postOptions)
+            .then(data => renderCanteen(data));
     }
-    function renderTopic(topic) {
-        console.log("渲染帖子", topic);
+    function renderCanteen(canteen) {
+        console.log("渲染食堂信息", canteen);
 
-        // 获取用户名元素
         const usernameElement = document.getElementById('user');
 
-        // 设置用户名文本内容
-        usernameElement.textContent = topic.user.name;
-
-        // 添加点击事件监听器
-        usernameElement.addEventListener('click', function () {
-            // 这里放置点击用户名时的操作，比如跳转到用户详情页
-            window.location = 'detail-user.jsp?userId=' + topic.user.id;
-        });
+        usernameElement.textContent = canteen.name;
 
         // 其余的渲染逻辑
-        document.getElementById('time').textContent = topic.time;
-        if(topic.image===undefined){
-            document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>";
+        document.getElementById('time').textContent = "营业时间:"+canteen.startTime+"-"+canteen.endTime
+        document.getElementById('content').innerHTML = "<p>" + canteen.info + "</p>"
+        if(canteen.userRating==='还没评分'){
+            document.getElementById('myRating').textContent = "你还未评分"
+            document.getElementById('setRating').innerText = "评分"
         }else {
-            document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + topic.image + ">";
+            document.getElementById('myRating').textContent = "我的评分:"+canteen.userRating
+            document.getElementById('setRating').innerText = "修改评分"
         }
-        document.getElementById('like-count').textContent = topic.like;
+        if(canteen.avgRating==='暂无数据'){
+            document.getElementById('avgRating').textContent = "综合评分：" + canteen.avgRating
+        }else {
+            document.getElementById('avgRating').textContent = "综合评分：" + canteen.avgRating
+        }
     }
 
-    function getComment(id) {
+    function getEvaluate(id) {
         console.log("获取评论")
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
@@ -185,14 +180,14 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                type: 'getById',
-                topicId: id,
+                type: 'getListByCanteenId',
+                canteenId: id,
             }),
         };
-        fetchData('TopicEvaluateServlet', postOptions)
-            .then(data => renderComment(data));
+        fetchData('CanteenEvaluateServlet', postOptions)
+            .then(data => renderEvaluate(data));
     }
-    function renderComment(list) {
+    function renderEvaluate(list) {
         console.log("渲染评论", list)
         const postsContainer = document.getElementById('comments');
         // 清空容器
@@ -206,7 +201,7 @@
 
             const userElement = document.createElement("div");
             userElement.classList.add("user-info");
-            userElement.innerHTML = "<strong><span class=\"commenter\" id=\"commenter\">" + postData.user.name + "</span>:</strong> <span id=\"comment-content\">" + postData.content + "</span>";
+            userElement.innerHTML = "<p>用户评分:"+postData.rating+"</p><strong><span class=\"commenter\" id=\"commenter\">" + postData.user.name + "</span>:</strong> <span id=\"comment-content\">" + postData.content + "</span>";
             postElement.appendChild(userElement);
             const commenterElement = userElement.querySelector("#commenter");
             commenterElement.addEventListener('click', function () {
@@ -214,73 +209,47 @@
             });
 
             const timeElement = document.createElement("div");
-            timeElement.classList.add("timestamp");
-            timeElement.textContent = postData.time
+            if(postData.admin.name!==undefined){
+                timeElement.innerHTML = "<p style='margin-left: 20px'>管理员"+postData.admin.name+" 回复:"+postData.replyContent+"</p>"
+            }
 
             postElement.appendChild(timeElement)
             postsContainer.appendChild(postElement);
         });
     }
-    function getLike(topicId) {
-        console.log("发表评论")
+    function setRating() {
+        const evaluate = document.getElementById('evaluate').value;
+        const rating = document.getElementById('rating').value;
+
+        // 判断evaluate是否为空
+        if (evaluate.trim() === '') {
+            alert("评论不能为空");
+            return;
+        }
+        // 判断rating是否在0到10之间
+        const numericRating = parseFloat(rating);
+        if (isNaN(numericRating) || numericRating < 0 || numericRating > 10) {
+            console.log('评分无效，输入的评分不在0到10之间');
+            return;
+        }
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                type: 'checkLike',
-                topicId: topicId,
+                type: 'setRating',
+                canteenId: canteenId,
+                content: evaluate,
+                rating: numericRating,
             }),
         };
-        fetchData('TopicServlet', postOptions)
-            .then(data => {
-                document.getElementById('like-button').innerText = data.message
-            });
+        fetchData('CanteenEvaluateServlet', postOptions)
+            .then(() => window.location.reload());
     }
-    function postComment(topicId) {
-        console.log("发表评论")
-        const postOptions = {
-            method: 'POST', // 设置请求方法为 POST
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                type: 'postComment',
-                topicId: topicId,
-                content: document.getElementById('evaluate').value
-            }),
-        };
-        fetchData('TopicEvaluateServlet', postOptions)
-            .then(data => {
-                document.getElementById('evaluate').value = ""
-                renderComment(data)
-            });
-    }
-    function like() {
-        console.log("点赞")
-        const postOptions = {
-            method: 'POST', // 设置请求方法为 POST
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                type: 'like',
-                id: topicId,
-            }),
-        };
-        fetchData('TopicServlet', postOptions)
-            .then(data => {
-                console.log(data.message)
-                if (data.message=='点赞') {
-                    document.getElementById('like-button').innerText = data.message
-                } else {
-                    document.getElementById('like-button').innerText = data.message
-                }
-                document.getElementById('like-count').textContent = data.like;
-            });
-    }
+
 </script>
 
 </body>
 </html>
+
