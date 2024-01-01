@@ -40,7 +40,9 @@
       justify-content: space-around;
       margin: 20px;
     }
-
+    #username{
+      cursor: pointer;
+    }
     .post {
       border: 1px solid #888;
       padding: 10px;
@@ -119,29 +121,68 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
+    dialog{
+      width: 400px;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
 <header>
   <h1>交流社区</h1>
   <div class="search-bar">
-    <button class="search-button" onclick="history.back()">返回</button>
-    <input type="text" placeholder="Search...">
-    <button class="search-button">搜索</button>
-    <button class="search-button" onclick="">热度排序</button>
-    <button class="search-button" onclick="">时间排序</button>
+<!--    <button class="search-button" onclick="history.back()">返回</button>-->
+    <input type="text" id="searchContent" name="searchContent" placeholder="Search...">
+    <button class="search-button" onclick="searchTopic()" >搜索</button>
+<!--    <button class="search-button" onclick="">热度排序</button>-->
+<!--    <button class="search-button" onclick="">时间排序</button>-->
+    <button class="search-button" onclick="document.getElementById('postDialog').showModal();">发表帖子</button>
     </div>
   </div>
 </header>
 
 <section id="posts">
+
 </section>
+
+<dialog id="postDialog">
+  <h2>发表帖子</h2>
+  <label for="content">内容:</label>
+  <input type="text" id="content" name="content" style="width: 100%" required>
+  <div style="margin-top: 15px">
+    <label for="image">图片:</label>
+    <input type="file" id="image">
+  </div>
+  <div style="margin-top: 20px">
+    <button class="search-button" onclick="addTopic()">发表</button>
+    <button class="search-button" onclick="document.getElementById('postDialog').close();">取消</button>
+  </div>
+</dialog>
 </body>
 <script>
   window.onload = function() {
     getTopic();
     // getRecommend();
   };
+  function searchTopic() {
+    const searchContent = document.getElementById("searchContent").value;
+    // 构造 POST 请求的选项对象
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        type: 'searchTopic',
+        searchContent: searchContent,
+      }),
+    };
+    fetchData('TopicServlet', postOptions)
+            .then(data => renderTopic(data))
+            .catch(error => {
+              console.error("搜索话题出错:", error);
+            });
+  }
   function fetchData(url, options) {
     return fetch(url, options)
             .then(response => response.json())
@@ -174,14 +215,22 @@
 
       const userElement = document.createElement("div");
       userElement.classList.add("user-info");
-      userElement.innerHTML = "<h2><span class='user'>"+postData.user.name+"</span></h2>"+
+      userElement.innerHTML = "<h2><span class='user' id='username'>"+postData.user.name+"</span></h2>"+
               "<span class='timestamp'>"+postData.time+"</span>";
       userElement.id = postData.user.id
       postElement.appendChild(userElement);
+      const commenterElement = userElement.querySelector("#username");
+      commenterElement.addEventListener('click', function () {
+        window.location = 'detail-user.jsp?userId='+postData.user.id;
+      });
 
       const contentElement = document.createElement("div");
       contentElement.classList.add("post-content");
-      contentElement.innerHTML = "<p>" + postData.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + postData.image + ">";
+      if(postData.image===undefined){
+        contentElement.innerHTML = "<p>" + postData.content + "</p>"
+      }else {
+        contentElement.innerHTML = "<p>" + postData.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + postData.image + ">";
+      }
       postElement.appendChild(contentElement);
 
       const actionsElement = document.createElement("div");
@@ -246,6 +295,45 @@
               }
             });
   }
-
+  function addTopic() {
+    const content = document.getElementById('content').value;
+    const image = document.getElementById('image').files[0];
+    const formData=new FormData()
+    formData.append('type','topic')
+    formData.append('image',image)
+    const postOptions = {
+      method: 'POST', // 设置请求方法为 POST
+      body: formData,
+    };
+    fetch("FileServlet",postOptions)
+            .then(response => response.text())
+            .then(imageUrl => {
+              console.log("帖子图片"+imageUrl)
+              const options={
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                  type: 'addTopic',
+                  content: content,
+                  image: imageUrl,
+                }),
+              }
+              fetch("TopicServlet",options)
+                      .then(response => response.json())
+                      .then(data =>{
+                        renderTopic(data)
+                        alert("发表成功")
+                        document.getElementById('postDialog').close();
+                      })
+                      .catch(error=>{
+                        console.error("发表出错",error)
+                      })
+            })
+            .catch(error => {
+              console.error("图片保存出错:", error)
+            });
+  }
 </script>
 </html>

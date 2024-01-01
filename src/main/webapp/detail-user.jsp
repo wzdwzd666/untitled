@@ -35,6 +35,7 @@
             border: 1px solid #888;
             padding: 10px;
             margin-bottom: 20px;
+            cursor: pointer;
         }
 
         .post img {
@@ -59,20 +60,39 @@
             margin-bottom: 10px;
             cursor: pointer;
         }
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 10px 35px;
+        }
+
+        button.view-button {
+            background-color: #008CBA; /* Blue background */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>User Home</h1>
+    <h1>用户主页</h1>
+    <!-- 返回按钮 -->
+    <button class="return-button" onclick="history.back()">返回</button>
 </header>
 
 <section>
     <!-- 用户信息 -->
     <div class="user-info">
-        <h2><span id="account"></span></h2>
-        <div id="name"></div>
-        <div id="type"></div>
+        <div>账号:<span id="account"></span></div>
+        <h2 ><span id="name"></span> <span id="type"></span></h2>
     </div>
 
     <!-- 用户帖子 -->
@@ -88,61 +108,105 @@
             </div>
         </div>
     </div>
-
-    <!-- 返回按钮 -->
-    <button class="return-button" onclick="history.back()">返回</button>
 </section>
 
 <script>
     // 使用 JavaScript 从后端获取用户信息和帖子数据
     window.onload = function () {
-        getUserInfo();
-        getUserPosts();
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('userId');
+        console.log(id);
+        getUserInfo(id);
+        getUserPosts(id);
+    }
+    function fetchData(url, options) {
+        return fetch(url, options)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
     }
 
     // 获取用户信息
-    function getUserInfo() {
-        // 使用 fetch 或者其他 Ajax 技术从后端获取用户信息，这里只是一个示例
-        const userId = "<%= request.getParameter("userId") %>"; // 获取页面传递的用户 ID
-        const userInfo = { // 替换成实际的用户信息
-            account: "user123",
-            name: "John Doe",
-            type: "Regular User"
+    function getUserInfo(id) {
+        console.log("获取用户信息")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'getUser',
+                userId: id,
+            }),
         };
+        fetchData('UserServlet', postOptions)
+            .then(user => {
+                document.getElementById('account').textContent=user.account
+                document.getElementById('name').textContent=user.name
+                document.getElementById('type').textContent=user.type
+            });
 
-        // 将用户信息显示在页面上
-        document.getElementById('account').textContent = "Account: " + userInfo.account;
-        document.getElementById('name').textContent = "Name: " + userInfo.name;
-        document.getElementById('type').textContent = "Type: " + userInfo.type;
     }
 
     // 获取用户帖子
-    function getUserPosts() {
-        // 使用 fetch 或者其他 Ajax 技术从后端获取用户帖子数据，这里只是一个示例
-        const userId = "<%= request.getParameter("userId") %>"; // 获取页面传递的用户 ID
-        const userPosts = [
-            {
-                id: 1,
-                user: { name: "John Doe" },
-                time: "2023-01-01 12:00",
-                content: "This is a user post.",
-                image: "path/to/image.jpg"
+    function getUserPosts(id) {
+        console.log("获取用户帖子信息")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            // 可能有更多的帖子
-        ];
+            body: new URLSearchParams({
+                type: 'getByUserId',
+                userId: id,
+            }),
+        };
+        fetchData('TopicServlet', postOptions)
+            .then(list => {
+                const postsContainer = document.getElementById('post-container');
+                // 清空容器
+                postsContainer.innerHTML = "";
+                list.forEach(postData => {
+                    const postElement = document.createElement("div");
+                    postElement.classList.add("post");
+                    postElement.id = postData.id;
 
-        // 将用户帖子显示在页面上
-        const postContainer = document.getElementById('post-container');
-        userPosts.forEach(post => {
-            const postElement = document.createElement("div");
-            postElement.classList.add("post");
-            postElement.id = "post-" + post.id;
+                    postElement.addEventListener('click', function () {
+                        window.location='detail-topic.jsp?topicId='+postData.id
+                    });
 
-            // 设置帖子内容，类似于之前的例子
-            // ...
+                    const userElement = document.createElement("h2");
+                    userElement.innerHTML = "<span id=\"username\">"+postData.user.name+"</span>"
+                    postElement.appendChild(userElement)
 
-            postContainer.appendChild(postElement);
-        });
+                    const timeElement = document.createElement("div");
+                    timeElement.classList.add("timestamp")
+                    timeElement.textContent = postData.time
+                    postElement.appendChild(timeElement)
+
+                    const contentElement = document.createElement("div");
+                    contentElement.classList.add("content");
+                    if(postData.image===undefined){
+                        contentElement.innerHTML = "<p class='post-content'>"
+                    }else {
+                        contentElement.innerHTML = "<p class='post-content'>" + postData.content + "</p>" + "<img alt='图片' style='width: 200px;' class='post-image'  src=" + postData.image + ">";
+                    }
+                    postElement.appendChild(contentElement);
+
+                    const actionsElement = document.createElement("div");
+                    actionsElement.classList.add("post-actions");
+                    actionsElement.innerHTML =
+                        "<div class=\"like-count\">点赞数：<span id=\"like-count\">"+postData.like+"</span></div>"+
+                        "<button class='view-button' onclick=\"showDetail('" + postData.id + "')\">查看</button>"
+                    postElement.appendChild(actionsElement);
+
+
+                    postsContainer.appendChild(postElement);
+                });
+            });
+    }
+    function showDetail(id){
+        window.location='detail-topic.jsp?topicId='+id
     }
 </script>
 

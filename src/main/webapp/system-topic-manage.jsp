@@ -9,9 +9,9 @@
 <body>
 <h2>社区话题管理</h2>
 <div>
-    <label for="searchTitle">通过标题搜索:</label>
-    <input type="text" id="searchTitle" name="searchTitle" style="width: 200px">
-    <button onclick="searchByTitle()">搜索</button>
+    <label for="searchContent">通过标题搜索:</label>
+    <input type="text" id="searchContent" name="searchContent" style="width: 200px">
+    <button onclick="searchTopic()">搜索</button>
 </div>
 
 <h3>社区帖子列表:</h3>
@@ -44,7 +44,7 @@
 
     // 获取话题列表
     function getTopicList() {
-        const searchTitle = document.getElementById('searchTitle').value;
+        const searchTitle = document.getElementById('searchContent').value;
         // 构造 POST 请求的选项对象
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
@@ -75,7 +75,7 @@
             row.insertCell(2).textContent = review.time;
             row.insertCell(3).textContent = review.content
             // 插入图片
-            if(review.image === undefined){
+            if(review.image == null){
                 row.insertCell(4).textContent = "无"
             }else {
                 console.log(review.image)
@@ -105,15 +105,15 @@
         }
     }
     // 给文本框添加键盘按下事件监听器
-    document.getElementById('searchTitle').addEventListener('keydown', function(event) {
+    document.getElementById('searchContent').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             // 如果按下的是回车键，则触发搜索操作
-            searchByTitle();
+            searchTopic();
         }
     });
-    // 根据标题搜索话题
-    function searchByTitle() {
-        const searchTitle = document.getElementById("searchTitle").value;
+    // 搜索话题
+    function searchTopic() {
+        const searchContent = document.getElementById("searchContent").value;
         // 构造 POST 请求的选项对象
         const postOptions = {
             method: 'POST', // 设置请求方法为 POST
@@ -121,8 +121,8 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-                type: 'searchByTitle',
-                searchTitle: searchTitle,
+                type: 'searchTopic',
+                searchContent: searchContent,
             }),
         };
         fetchData('TopicServlet', postOptions)

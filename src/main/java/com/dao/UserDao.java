@@ -35,6 +35,33 @@ public class UserDao {
             throw new RuntimeException(e);
         }
     }
+    public static User findUserById(String userId){
+        User user = null;
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT * FROM user WHERE user_id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,userId);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString(1);
+                String account=rs.getString(2);
+                String name=rs.getString(3);
+                String password=rs.getString(4);
+                String type=rs.getString(5);
+                user=new User(id,account,name,password,type);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     //插入新用户
     public static void insertUser(User user){
         Connection connection= MyConnection.getConnection();

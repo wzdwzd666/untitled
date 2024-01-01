@@ -30,7 +30,9 @@
             padding: 10px;
             margin-bottom: 20px;
         }
-
+        #user{
+            cursor: pointer;
+        }
         .post img {
             max-width: 100%;
             height: auto;
@@ -103,7 +105,7 @@
         </div>
         <!-- 点赞区域 -->
         <div class="like-count">点赞数：<span id="like-count">0</span></div>
-        <button class="like-button" id="like-button" onclick="addLike()">点赞</button>
+        <button class="like-button" id="like-button" onclick="like()">点赞</button>
     </div>
     <h2>评论</h2>
     <div class="upload-btn-wrapper">
@@ -121,13 +123,15 @@
 </section>
 
 <script>
+    let topicId;
     window.onload=function getData(){
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        const id = urlParams.get('topicId');
-        console.log(id);
-        getTopic(id);
-        getComment(id);
+        topicId = urlParams.get('topicId');
+        console.log(topicId);
+        getTopic(topicId);
+        getComment(topicId);
+        getLike(topicId);
     }
     function fetchData(url, options) {
         return fetch(url, options)
@@ -150,12 +154,30 @@
             .then(data => renderTopic(data));
     }
     function renderTopic(topic) {
-        console.log("渲染帖子", topic)
-        document.getElementById('user').textContent = topic.user.name
-        document.getElementById('time').textContent = topic.time
-        document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + topic.image + ">"
-        document.getElementById('like-count').textContent = topic.like
+        console.log("渲染帖子", topic);
+
+        // 获取用户名元素
+        const usernameElement = document.getElementById('user');
+
+        // 设置用户名文本内容
+        usernameElement.textContent = topic.user.name;
+
+        // 添加点击事件监听器
+        usernameElement.addEventListener('click', function () {
+            // 这里放置点击用户名时的操作，比如跳转到用户详情页
+            window.location = 'detail-user.jsp?userId=' + topic.user.id;
+        });
+
+        // 其余的渲染逻辑
+        document.getElementById('time').textContent = topic.time;
+        if(topic.image===undefined){
+            document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>";
+        }else {
+            document.getElementById('content').innerHTML = "<p>" + topic.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + topic.image + ">";
+        }
+        document.getElementById('like-count').textContent = topic.like;
     }
+
     function getComment(id) {
         console.log("获取评论")
         const postOptions = {
@@ -189,7 +211,7 @@
             postElement.appendChild(userElement);
             const commenterElement = userElement.querySelector("#commenter");
             commenterElement.addEventListener('click', function () {
-                window.location = 'detail-user.jsp?topicId = '+postData.user.id;
+                window.location = 'detail-user.jsp?userId='+postData.user.id;
             });
 
             const timeElement = document.createElement("div");
@@ -199,6 +221,23 @@
             postElement.appendChild(timeElement)
             postsContainer.appendChild(postElement);
         });
+    }
+    function getLike(topicId) {
+        console.log("发表评论")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'checkLike',
+                topicId: topicId,
+            }),
+        };
+        fetchData('TopicServlet', postOptions)
+            .then(data => {
+                document.getElementById('like-button').innerText = data.message
+            });
     }
     function postComment(topicId) {
         console.log("发表评论")
@@ -217,6 +256,29 @@
             .then(data => {
                 document.getElementById('evaluate').value = ""
                 renderComment(data)
+            });
+    }
+    function like() {
+        console.log("点赞")
+        const postOptions = {
+            method: 'POST', // 设置请求方法为 POST
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                type: 'like',
+                id: topicId,
+            }),
+        };
+        fetchData('TopicServlet', postOptions)
+            .then(data => {
+                console.log(data.message)
+                if (data.message=='点赞') {
+                    document.getElementById('like-button').innerText = data.message
+                } else {
+                    document.getElementById('like-button').innerText = data.message
+                }
+                document.getElementById('like-count').textContent = data.like;
             });
     }
 </script>

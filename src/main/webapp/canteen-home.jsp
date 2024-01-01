@@ -28,12 +28,16 @@
 
     <article>
       <h2>社区热门话题</h2>
-      <!-- 添加社区热门话题的内容 -->
+      <div id="posts" class="info">
+
+      </div>
     </article>
 
     <aside>
-      <h2>提示</h2>
-      <!-- 添加提示内容，例如最新评论点赞、未看社区信息提示、未看投诉回复提示 -->
+      <h2>食堂信息</h2>
+      <div id="canteen" class="info">
+
+      </div>
     </aside>
   </section>
   </body>
@@ -41,6 +45,7 @@
     window.onload = function() {
       getNotice();
       getRecommend();
+      getTopic();
     };
     function fetchData(url, options) {
       return fetch(url, options)
@@ -130,6 +135,112 @@
 
         recommendContainer.appendChild(element);
       });
+    }
+    function getTopic() {
+      const postOptions = {
+        method: 'POST', // 设置请求方法为 POST
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          type: 'getPopularTopic',
+        }),
+      };
+      fetchData('TopicServlet', postOptions)
+              .then(data => renderTopic(data));
+    }
+    function renderTopic(list) {
+      console.log("渲染", list)
+      const postsContainer = document.getElementById('posts');
+      // 清空容器
+      postsContainer.innerHTML = "";
+
+      list.forEach(postData => {
+        const postElement = document.createElement("div");
+        postElement.classList.add("post");
+        postElement.id=postData.id
+
+        const userElement = document.createElement("div");
+        userElement.classList.add("user-info");
+        userElement.innerHTML = "<h2><span class='user' id='username'>"+postData.user.name+"</span></h2>"+
+                "<span class='timestamp'>"+postData.time+"</span>";
+        userElement.id = postData.user.id
+        postElement.appendChild(userElement);
+        const commenterElement = userElement.querySelector("#username");
+        commenterElement.addEventListener('click', function () {
+          window.location = 'detail-user.jsp?userId='+postData.user.id;
+        });
+
+        const contentElement = document.createElement("div");
+        contentElement.classList.add("post-content");
+        if(postData.image === undefined){
+          contentElement.innerHTML = "<p>" + postData.content + "</p>"
+        }else{
+          contentElement.innerHTML = "<p>" + postData.content + "</p>" + "<img alt='图片' style='width: 350px;' class='post-image'  src=" + postData.image + ">"
+        }
+        postElement.appendChild(contentElement);
+
+        const actionsElement = document.createElement("div");
+        actionsElement.classList.add("post-actions");
+        actionsElement.innerHTML =
+                " <button class='view-button' onclick=\"showDetail('" + postData.id + "')\">查看</button>" +
+                "<button class='view-button' onclick=\"addLike('" + postData.id + "')\" id='like-button-" + postData.id + "'>点赞" + postData.like + "</button>" +
+                "<button class='view-button' onclick=\"cancelLike('" + postData.id + "')\">取消点赞</button>";
+        postElement.appendChild(actionsElement);
+
+        postsContainer.appendChild(postElement);
+      });
+    }
+    function showDetail(id){
+      window.location='detail-topic.jsp?topicId='+id
+    }
+    function addLike(id) {
+      console.log("点赞")
+      const postOptions = {
+        method: 'POST', // 设置请求方法为 POST
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          type: 'addLike',
+          id: id,
+        }),
+      };
+      fetchData('TopicServlet', postOptions)
+              .then(data => {
+                console.log(data.message)
+                if (data.message=='点赞过了') {
+                  alert(data.message)
+                } else {
+                  document.getElementById('like-button-' + id).innerText = "点赞" + data.message;
+                  alert("点赞成功")
+                }
+              });
+    }
+    function cancelLike(id) {
+      console.log("取消点赞")
+      const postOptions = {
+        method: 'POST', // 设置请求方法为 POST
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          type: 'cancelLike',
+          id: id,
+        }),
+      };
+      fetchData('TopicServlet', postOptions)
+              .then(data => {
+                console.log(data)
+                if(data.message=='还没点赞'){
+                  console.log("取消")
+                  alert(data.message)
+                }else {
+                  console.log("成功")
+                  document.getElementById('like-button-' + id).innerText = "点赞" + data.message;
+                  alert("取消点赞成功")
+                }
+              });
     }
   </script>
 </html>

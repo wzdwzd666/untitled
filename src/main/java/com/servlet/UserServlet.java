@@ -25,6 +25,16 @@ public class UserServlet extends HttpServlet {
                 getAll(resp);
                 break;
             }
+            case "getUser":{
+                String id=req.getParameter("userId");
+                User user=UserDao.findUserById(id);
+                Gson gson=new Gson();
+                PrintWriter out=resp.getWriter();
+                resp.setContentType("text/plain;charset=UTF-8");
+                out.println(gson.toJson(user));
+                out.close();
+                break;
+            }
             case "edit": {
                 String id = req.getParameter("id");
                 String name = req.getParameter("name");
@@ -49,7 +59,6 @@ public class UserServlet extends HttpServlet {
                     out.close();
                 }
             }
-            break;
             case "delete": {
                 String id=req.getParameter("id");
                 UserDao.deleteUser(id);

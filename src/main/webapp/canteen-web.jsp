@@ -63,7 +63,7 @@
     }
     iframe{
       width: 100%;
-      height: 100%;
+      height: 80%;
       border: none;
       overflow: hidden;
     }
@@ -76,10 +76,10 @@
 
 <nav>
   <a href="canteen-home.jsp" target="frame">首页</a>
-  <a href="canteen-community.jsp">交流社区</a>
+  <a href="canteen-community.jsp" target="frame">交流社区</a>
   <a href="#" target="frame">投诉回复</a>
   <a href="#" target="frame">评论点赞</a>
-  <a href="detail-my.jsp" target="frame">我的信息</a>
+  <a href="detail-user.jsp?userId=${user.id}" target="frame">我的信息</a>
   <a href="index.jsp">退出登录</a>
 </nav>
 
@@ -89,4 +89,16 @@
   &copy; 2023 食堂交流管理社区
 </footer>
 </body>
+<script>
+  const iframe = document.getElementById('frame');
+
+  // 添加滚轮事件监听器到 iframe
+  iframe.addEventListener('wheel', (event) => {
+    // 阻止 iframe 的滚轮事件
+    event.preventDefault();
+
+    // 将滚轮事件传递给整个页面
+    window.scrollBy(0, event.deltaY);
+  });
+</script>
 </html>

@@ -23,8 +23,6 @@ public class TopicDao {
             return null;
         }
         try {
-//            String sql="SELECT topic.*, user.name FROM topic\n" +
-//                    "JOIN user ON user.user_id = topic.user_id";
             String sql="SELECT\n" +
                     "    topic.*,\n" +
                     "    user.name,\n" +
@@ -42,6 +40,7 @@ public class TopicDao {
             while (rs.next()){
                 String id=rs.getString("topic_id");
                 User user =new User();
+                user.setId(rs.getString("user_id"));
                 user.setName(rs.getString("name"));
                 String time=rs.getString("time");
                 String content=rs.getString("content");
@@ -57,22 +56,76 @@ public class TopicDao {
             throw new RuntimeException(e);
         }
     }
-    public static List<Topic> searchByTitle(String t){
+    public static List<Topic> findUserTopic(String userId){
         List<Topic> topicList=new ArrayList<>();
         Connection connection= MyConnection.getConnection();
         if(connection==null){
             return null;
         }
         try {
-            String sql="SELECT topic.*, user.name FROM topic\n" +
-                    "JOIN user ON user.user_id = topic.user_id\n" +
-                    "WHERE topic.title LIKE ?";
+            String sql="SELECT\n" +
+                    "    topic.*,\n" +
+                    "    user.name,\n" +
+                    "    COUNT(like_info.topic_id) AS like_count\n" +
+                    "FROM\n" +
+                    "    topic\n" +
+                    "JOIN\n" +
+                    "    user ON user.user_id = topic.user_id\n" +
+                    "LEFT JOIN\n" +
+                    "    like_info ON like_info.topic_id = topic.topic_id\n" +
+                    "WHERE topic.user_id = ?\n"+
+                    "GROUP BY\n" +
+                    "    topic.topic_id;";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "%" + t + "%"); // 使用通配符 % 包裹查询字符串
+            statement.setString(1,userId);
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
                 String id=rs.getString("topic_id");
                 User user =new User();
+                user.setId(rs.getString("user_id"));
+                user.setName(rs.getString("name"));
+                String time=rs.getString("time");
+                String content=rs.getString("content");
+                String image=rs.getString("image");
+                int like=rs.getInt("like_count");
+                topicList.add(new Topic(id,user,time,content,image,like));
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return topicList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static List<Topic> searchTopic(String string){
+        List<Topic> topicList=new ArrayList<>();
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT\n" +
+                    "    topic.*,\n" +
+                    "    user.name,\n" +
+                    "    COUNT(like_info.topic_id) AS like_count\n" +
+                    "FROM\n" +
+                    "    topic\n" +
+                    "JOIN\n" +
+                    "    user ON user.user_id = topic.user_id\n" +
+                    "LEFT JOIN\n" +
+                    "    like_info ON like_info.topic_id = topic.topic_id\n" +
+                    "WHERE\n" +
+                    "   topic.content LIKE ?\n" +
+                    "GROUP BY\n" +
+                    "    topic.topic_id;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, "%" + string + "%"); // 使用通配符 % 包裹查询字符串
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString("topic_id");
+                User user =new User();
+                user.setId(rs.getString("user_id"));
                 user.setName(rs.getString("name"));
                 String time=rs.getString("time");
                 String content=rs.getString("content");
@@ -115,6 +168,7 @@ public class TopicDao {
             while (rs.next()){
                 String id=rs.getString("topic_id");
                 User user =new User();
+                user.setId(rs.getString("user_id"));
                 user.setName(rs.getString("name"));
                 String time=rs.getString("time");
                 String content=rs.getString("content");
@@ -126,6 +180,49 @@ public class TopicDao {
             statement.close();
             connection.close();
             return topic;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static List<Topic> getPopularTopic(){
+        List<Topic> topicList=new ArrayList<>();
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return null;
+        }
+        try {
+            String sql="SELECT\n" +
+                    "    topic.*,\n" +
+                    "    user.name,\n" +
+                    "    COUNT(like_info.topic_id) AS like_count\n" +
+                    "FROM\n" +
+                    "    topic\n" +
+                    "JOIN\n" +
+                    "    user ON user.user_id = topic.user_id\n" +
+                    "LEFT JOIN\n" +
+                    "    like_info ON like_info.topic_id = topic.topic_id\n" +
+                    "GROUP BY\n" +
+                    "    topic.topic_id\n" +
+                    "ORDER BY\n" +
+                    "    like_count DESC\n" +
+                    "LIMIT 3;\n";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet rs=statement.executeQuery();
+            while (rs.next()){
+                String id=rs.getString("topic_id");
+                User user =new User();
+                user.setId(rs.getString("user_id"));
+                user.setName(rs.getString("name"));
+                String time=rs.getString("time");
+                String content=rs.getString("content");
+                String image=rs.getString("image");
+                int like=rs.getInt("like_count");
+                topicList.add(new Topic(id,user,time,content,image,like));
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return topicList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -216,6 +313,25 @@ public class TopicDao {
             statement.close();
             connection.close();
             return like;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void insertTopic(String userId,String time,String content,String image){
+        Connection connection= MyConnection.getConnection();
+        if(connection==null){
+            return;
+        }
+        try {
+            String sql="INSERT INTO topic(user_id,time,content,image) VALUES (?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,userId);
+            statement.setString(2,time);
+            statement.setString(3,content);
+            statement.setString(4,image);
+            statement.execute();
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
