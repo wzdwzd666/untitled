@@ -43,7 +43,7 @@
   <!-- 删除确认弹窗 -->
   <dialog id="deleteDialog">
     <h2>确认</h2>
-    <p>确认删除公告: <span id="deleteCanteenName"></span> 吗？</p>
+    <p>确认删除食堂: <span id="deleteCanteenName"></span> 吗？</p>
     <button onclick="confirmCanteen()">确认删除</button>
     <button onclick="document.getElementById('deleteDialog').close();">取消</button>
   </dialog>
@@ -53,7 +53,7 @@
     <h2>发布公告</h2>
     <label for="canteenName">公告标题:</label>
     <input type="text" id="canteenName" name="canteenName" required>
-    <label for="info">公告内容:</label>
+    <label for="info">公告内容:</label><
     <input type="text" id="info" name="info" required>
     <input type="submit" onclick="insertCanteen()" value="发布">
     <input type="submit" onclick="document.getElementById('newDialog').close();" value="取消">
@@ -100,9 +100,9 @@
       row.insertCell(1).textContent = review.admin.name
       row.insertCell(2).textContent = review.title
       row.insertCell(3).textContent = review.time
-      row.insertCell(4).textContent = review.content
+      row.insertCell(4).textContent = review.content;
       row.insertCell(5).innerHTML = "<button onclick=\"editCanteen('"+review.id+"')\">编辑</button>"+
-              " <button onclick=\"deleteCanteen('"+review.id+"','"+review.title+"')\">删除</button>"
+              " <button onclick=\"deleteCanteen('"+review.id+"','"+review.name+"')\">删除</button>"
     });
   }
   function editCanteen(id) {
@@ -130,7 +130,7 @@
       }),
     };
 
-    fetchData('NoticeServlet', postOptions)
+    fetchData('CanteenServlet', postOptions)
             .then(data => {
               renderReviewList(data)
               alert("编辑成功")
@@ -183,8 +183,12 @@
 
     fetchData('NoticeServlet', postOptions)
             .then(data => {
+              if(data.message){
+                alert("食堂名称重复!")
+                return
+              }
               renderReviewList(data)
-              alert("发布成功")
+              alert("添加成功")
               document.getElementById('newDialog').close()
             });
   }

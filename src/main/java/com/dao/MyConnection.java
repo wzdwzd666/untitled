@@ -7,6 +7,7 @@ import java.sql.SQLException;
 public class MyConnection {
     private static final String HOST_ADDRESS="localhost";
     private static  final String DATABASE_NAME="canteen_design";
+//    private static final String USER="root";
     private static final String USER="canteen_design";
     private static final String PASS_WORD="123456";
     private  static  final String DBURL="jdbc:mysql://"+HOST_ADDRESS+":3306/"+DATABASE_NAME+"?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";

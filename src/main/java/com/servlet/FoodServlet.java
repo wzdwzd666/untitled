@@ -26,7 +26,12 @@ public class FoodServlet extends HttpServlet {
         Gson gson=new Gson();
         switch (type){
             case "getAll":{
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 return;
             }
             case "edit": {
@@ -37,11 +42,20 @@ public class FoodServlet extends HttpServlet {
                 String price=req.getParameter("price");
                 System.out.println("图片" + image);
                 FoodDao.editFood(id,name,cuisine,image,price);
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 break;
             }
             case "getByCanteen":{
                 String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
                 List<Food> foodList=FoodDao.getByCanteen(canteenId);
                 PrintWriter out=resp.getWriter();
                 resp.setContentType("text/plain;charset=UTF-8");
@@ -52,7 +66,12 @@ public class FoodServlet extends HttpServlet {
             case "delete": {
                 String id=req.getParameter("id");
                 FoodDao.deleteFood(id);
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 break;
             }
             case "insert": {
@@ -60,13 +79,18 @@ public class FoodServlet extends HttpServlet {
                 String name=req.getParameter("name");
                 Canteen canteen=new Canteen();
                 Admin admin= (Admin) req.getSession().getAttribute("admin");
-                canteen.setId(admin.getCanteenId());
+                System.out.println("管理员"+admin.getId()+"食堂"+admin.getCanteenId());
+                canteen.setId(admin.getCanteen().getId());
                 String cuisine=req.getParameter("cuisine");
                 String image=req.getParameter("image");
                 String price=req.getParameter("price");
                 Food food=new Food(id,name,canteen,cuisine,image,price,null,null);
                 FoodDao.insertFood(food);
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 System.out.println("图片" + image);
                 break;
             }
@@ -81,21 +105,31 @@ public class FoodServlet extends HttpServlet {
             case "addRecommend": {
                 String id = req.getParameter("id");
                 FoodDao.addRecommend(id);
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 break;
             }
             case "deleteRecommend": {
                 String id = req.getParameter("id");
                 FoodDao.deleteRecommend(id);
-                getAll(resp);
+                String canteenId=req.getParameter("canteenId");
+                if(canteenId==null){
+                    Admin admin= (Admin) req.getSession().getAttribute("admin");
+                    canteenId=admin.getCanteen().getId();
+                }
+                getByCanteen(canteenId,resp);
                 break;
             }
         }
     }
-    public void getAll(HttpServletResponse resp) throws IOException {
+    public void getByCanteen(String canteenId,HttpServletResponse resp) throws IOException {
         Gson gson=new Gson();
         PrintWriter out=resp.getWriter();
-        List<Food> foodList=FoodDao.findAllFood();
+        List<Food> foodList=FoodDao.getByCanteen(canteenId);
         resp.setContentType("text/plain;charset=UTF-8");
         out.println(gson.toJson(foodList));
         out.close();

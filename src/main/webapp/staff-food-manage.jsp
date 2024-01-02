@@ -87,7 +87,7 @@
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        type: 'getAll',
+        type: 'getByCanteen',
       }),
     };
 

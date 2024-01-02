@@ -16,7 +16,7 @@
     <h2>食堂管理系统</h2>
 </header>
 <nav>
-    <a class="align-left">管理员:${admin.name} 管理食堂:${admin.canteen.id}</a>
+    <a class="align-left">管理员:${admin.name} 管理食堂:${admin.canteen.name}</a>
     <a href="staff-canteen-manage.jsp" target="frame" id="canteen" onclick="changeColor('canteen')" class="selected">食堂管理</a>
     <a href="staff-food-manage.jsp" target="frame" id="food" onclick="changeColor('food')">菜品管理</a>
     <a href="staff-evaluate-manage.jsp" target="frame" id="evaluate" onclick="changeColor('evaluate')">评价信息</a>

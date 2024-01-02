@@ -116,11 +116,12 @@ public class TopicDao {
                     "LEFT JOIN\n" +
                     "    like_info ON like_info.topic_id = topic.topic_id\n" +
                     "WHERE\n" +
-                    "   topic.content LIKE ?\n" +
+                    "   topic.content LIKE ? OR user.name LIKE ?\n" +
                     "GROUP BY\n" +
                     "    topic.topic_id;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, "%" + string + "%"); // 使用通配符 % 包裹查询字符串
+            statement.setString(2,"%" + string + "%");
             ResultSet rs=statement.executeQuery();
             while (rs.next()){
                 String id=rs.getString("topic_id");
