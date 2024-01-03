@@ -31,7 +31,7 @@
 
   <!-- 编辑弹窗 -->
   <dialog id="editDialog">
-    <h2>编辑食堂信息</h2>
+    <h2>编辑公告信息</h2>
     <label for="newCanteenName">新标题:</label>
     <input type="text" id="newCanteenName" name="newCanteenName" required>
     <label for="newInfo">新内容</label>

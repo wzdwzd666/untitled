@@ -9,7 +9,7 @@
 <body>
 <h2>社区话题管理</h2>
 <div>
-    <label for="searchContent">通过标题搜索:</label>
+    <label for="searchContent">搜索内容:</label>
     <input type="text" id="searchContent" name="searchContent" style="width: 200px">
     <button onclick="searchTopic()">搜索</button>
 </div>
