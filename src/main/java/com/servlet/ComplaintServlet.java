@@ -24,7 +24,7 @@ public class ComplaintServlet extends HttpServlet {
         Admin admin= (Admin) req.getSession().getAttribute("admin");
         switch (type) {
             case "getListByCanteenId": {
-                String canteenId=admin.getCanteenId();
+                String canteenId=admin.getCanteen().getId();
                 getAll(canteenId,resp);
                 break;
             }
@@ -33,7 +33,7 @@ public class ComplaintServlet extends HttpServlet {
                 String replyContent = req.getParameter("replyContent");
                 String adminId = admin.getId();
                 ComplaintDao.editComplaintById(id, adminId, replyContent);
-                String canteenId=admin.getCanteenId();
+                String canteenId=admin.getCanteen().getId();
                 getAll(canteenId,resp);
                 break;
             }

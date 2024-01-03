@@ -79,7 +79,6 @@ public class FoodServlet extends HttpServlet {
                 String name=req.getParameter("name");
                 Canteen canteen=new Canteen();
                 Admin admin= (Admin) req.getSession().getAttribute("admin");
-                System.out.println("管理员"+admin.getId()+"食堂"+admin.getCanteenId());
                 canteen.setId(admin.getCanteen().getId());
                 String cuisine=req.getParameter("cuisine");
                 String image=req.getParameter("image");

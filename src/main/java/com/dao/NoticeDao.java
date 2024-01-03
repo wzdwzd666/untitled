@@ -30,9 +30,9 @@ public class NoticeDao {
                 Admin admin = new Admin();
                 admin.setId(rs.getString("admin_id"));
                 admin.setName(rs.getString("name"));
-                admin.setCanteenId(rs.getString("canteen_id"));
 
                 Canteen canteen = new Canteen();
+                canteen.setId(rs.getString("canteen_id"));
                 canteen.setName(rs.getString("canteen_name"));
                 admin.setCanteen(canteen);
 
@@ -92,9 +92,9 @@ public class NoticeDao {
                 Admin admin = new Admin();
                 admin.setId(rs.getString("admin_id"));
                 admin.setName(rs.getString("name"));
-                admin.setCanteenId(rs.getString("canteen_id"));
 
                 Canteen canteen = new Canteen();
+                canteen.setId(rs.getString("canteen_id"));
                 canteen.setName(rs.getString("canteen_name"));
                 admin.setCanteen(canteen);
 
